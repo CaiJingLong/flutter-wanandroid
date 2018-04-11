@@ -1,10 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_wanandroid/entity/HomeEntity.dart';
 import 'dart:io';
-
-import 'package:json_annotation/json_annotation.dart';
+import 'package:pdrpulm/pdrpulm.dart';
 
 var httpClient = new HttpClient();
 
@@ -29,20 +29,24 @@ class HomeList extends StatefulWidget {
 
 class _HomeListState extends State<HomeList> {
   int page = 0;
-
   List<Data> list = new List();
+  var isRefresh = false;
+  var isLoadMore = false;
 
   @override
   void initState() {
     super.initState();
-    _loadData();
+    _loadData(0);
   }
 
   @override
   Widget build(BuildContext context) {
-    return new ListView.builder(
-      itemBuilder: _buildItem,
-      itemCount: list.length,
+    return new ScrollIndicator(
+      onRefresh: _refresh,
+      child: new ListView.builder(
+        itemBuilder: _buildItem,
+        itemCount: list.length,
+      ),
     );
   }
 
@@ -51,7 +55,7 @@ class _HomeListState extends State<HomeList> {
     return new Text('${data.title}');
   }
 
-  void _loadData() async {
+  void _loadData(int page) async {
     var uri = new Uri.http("www.wanandroid.com", "article/list/$page/json");
     var request = await httpClient.getUrl(uri);
     var response = await request.close();
@@ -64,7 +68,27 @@ class _HomeListState extends State<HomeList> {
       list.clear();
     }
     list.addAll(resp.data.datas);
-
+    page = resp.data.curPage + 1;
+    isLoadMore = false;
+    isRefresh = false;
     setState(() {});
+  }
+
+
+  void _dragStart(DragStartDetails details) {
+    print("startX is ${details.globalPosition.dy}");
+  }
+
+  void _dragUpdate(DragUpdateDetails details) {
+    print("update dis ${details.globalPosition.distance}");
+  }
+
+  void _dragEnd(DragEndDetails details) {
+    print("drag end");
+  }
+
+  Future<Null> _refresh() {
+    _loadData(1);
+    return new Completer().future;
   }
 }
