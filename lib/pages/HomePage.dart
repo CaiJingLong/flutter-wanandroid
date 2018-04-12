@@ -29,19 +29,22 @@ class HomeList extends StatefulWidget {
 
 class _HomeListState extends State<HomeList> {
   int page = 0;
-  List<Data> list = new List();
+  List<HomeData> list = new List();
   var isRefresh = false;
   var isLoadMore = false;
+
+  List<HomeBannerData> bannerList = new List();
 
   @override
   void initState() {
     super.initState();
     _loadData(0);
+    _loadBanner();
   }
 
   @override
   Widget build(BuildContext context) {
-    var result = new RefreshIndicator(
+    var content = new RefreshIndicator(
         child: new LoadMoreWidget(
           onLoadMore: loadmore,
           listView: new ListView.builder(
@@ -51,12 +54,43 @@ class _HomeListState extends State<HomeList> {
           ),
         ),
         onRefresh: _refresh);
-    return result;
+    return new Column(
+      children: <Widget>[
+        new SizedBox(
+          height: 200.0,
+          child: _buildBanner(),
+        ),
+        new Expanded(child: content),
+      ],
+    );
+  }
+
+  Widget _buildBanner() {
+    return new SizedBox(
+      child: new ListView.builder(
+        itemBuilder: _buildBannerItem,
+        scrollDirection: Axis.horizontal,
+        itemCount: bannerList.length,
+      ),
+      height: 300.0,
+    );
+  }
+
+  Widget _buildBannerItem(BuildContext context, int index) {
+    var data = bannerList[index];
+    return new SizedBox(
+      width: 400.0,
+      height: 300.0,
+      child: new Image.network(data.imagePath),
+    );
   }
 
   Widget _buildItem(BuildContext context, int index) {
     var data = list[index];
-    return new Text('${data.title}');
+    return new ListTile(
+      title: new Text(data.title),
+      subtitle: new Text("作者:$data.author"),
+    );
   }
 
   void _loadData(int page) async {
@@ -86,5 +120,19 @@ class _HomeListState extends State<HomeList> {
 
   Future<Null> loadmore() async {
     _loadData(page);
+  }
+
+  void _loadBanner() async {
+    var uri = new Uri.http("www.wanandroid.com", "banner/json");
+    var request = await httpClient.getUrl(uri);
+    var response = await request.close();
+    var json = await response.transform(UTF8.decoder).join();
+
+    Map userMap = JSON.decode(json);
+    var resp = new HomeBannerEntity.fromJson(userMap);
+
+    bannerList.clear();
+    bannerList.addAll(resp.data);
+    setState(() {});
   }
 }

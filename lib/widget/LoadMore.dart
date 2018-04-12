@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 const kRefreshOffset = 40.0;
-const kLoadMoreOffset = 30.0;
+const kLoadMoreOffset = 0.0;
 
 enum _PullIndicatorMode { idle, dragReleaseRefresh, dragReleaseLoadMore, dragReleaseCancel, refreshing, loading }
 typedef Future PullCallback();

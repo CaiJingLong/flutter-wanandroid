@@ -3,8 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'HomeEntity.g.dart';
 
 @JsonSerializable()
-class HomeEntity extends Object with _$HomeEntitySerializerMixin{
-
+class HomeEntity extends Object with _$HomeEntitySerializerMixin {
   int errorCode;
   String errorMsg;
   PageData data;
@@ -15,12 +14,11 @@ class HomeEntity extends Object with _$HomeEntitySerializerMixin{
 }
 
 @JsonSerializable()
-class PageData extends Object with _$PageDataSerializerMixin{
-
+class PageData extends Object with _$PageDataSerializerMixin {
   int curPage;
   int pageCount;
 
-  List<Data> datas;
+  List<HomeData> datas;
 
   PageData(this.curPage, this.pageCount, this.datas);
 
@@ -28,14 +26,37 @@ class PageData extends Object with _$PageDataSerializerMixin{
 }
 
 @JsonSerializable()
-class Data extends Object with _$DataSerializerMixin{
+class HomeData extends Object with _$HomeDataSerializerMixin {
   String link;
   String author;
   int id;
   String title;
   bool fresh;
 
-  Data(this.link, this.author, this.id, this.title, this.fresh);
+  HomeData(this.link, this.author, this.id, this.title, this.fresh);
 
-  factory Data.fromJson(Map<String, dynamic> json) => _$DataFromJson(json);
+  factory HomeData.fromJson(Map<String, dynamic> json) => _$HomeDataFromJson(json);
+}
+
+@JsonSerializable()
+class HomeBannerEntity extends Object with _$HomeBannerEntitySerializerMixin {
+  int errorCode;
+  String errorMsg;
+  List<HomeBannerData> data;
+
+  HomeBannerEntity(this.errorCode, this.errorMsg, this.data);
+
+  factory HomeBannerEntity.fromJson(Map<String, dynamic> json) => _$HomeBannerEntityFromJson(json);
+}
+
+@JsonSerializable()
+class HomeBannerData extends Object with _$HomeBannerDataSerializerMixin {
+  String imagePath;
+  String url;
+  int id;
+  String title;
+
+  HomeBannerData(this.imagePath, this.url, this.id, this.title);
+
+  factory HomeBannerData.fromJson(Map<String, dynamic> json) => _$HomeBannerDataFromJson(json);
 }

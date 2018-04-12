@@ -29,13 +29,13 @@ PageData _$PageDataFromJson(Map<String, dynamic> json) => new PageData(
     json['pageCount'] as int,
     (json['datas'] as List)
         ?.map((e) =>
-            e == null ? null : new Data.fromJson(e as Map<String, dynamic>))
+            e == null ? null : new HomeData.fromJson(e as Map<String, dynamic>))
         ?.toList());
 
 abstract class _$PageDataSerializerMixin {
   int get curPage;
   int get pageCount;
-  List<Data> get datas;
+  List<HomeData> get datas;
   Map<String, dynamic> toJson() => <String, dynamic>{
         'curPage': curPage,
         'pageCount': pageCount,
@@ -43,14 +43,14 @@ abstract class _$PageDataSerializerMixin {
       };
 }
 
-Data _$DataFromJson(Map<String, dynamic> json) => new Data(
+HomeData _$HomeDataFromJson(Map<String, dynamic> json) => new HomeData(
     json['link'] as String,
     json['author'] as String,
     json['id'] as int,
     json['title'] as String,
     json['fresh'] as bool);
 
-abstract class _$DataSerializerMixin {
+abstract class _$HomeDataSerializerMixin {
   String get link;
   String get author;
   int get id;
@@ -62,5 +62,43 @@ abstract class _$DataSerializerMixin {
         'id': id,
         'title': title,
         'fresh': fresh
+      };
+}
+
+HomeBannerEntity _$HomeBannerEntityFromJson(Map<String, dynamic> json) =>
+    new HomeBannerEntity(
+        json['errorCode'] as int,
+        json['errorMsg'] as String,
+        (json['data'] as List)
+            ?.map((e) => e == null
+                ? null
+                : new HomeBannerData.fromJson(e as Map<String, dynamic>))
+            ?.toList());
+
+abstract class _$HomeBannerEntitySerializerMixin {
+  int get errorCode;
+  String get errorMsg;
+  List<HomeBannerData> get data;
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'errorCode': errorCode,
+        'errorMsg': errorMsg,
+        'data': data
+      };
+}
+
+HomeBannerData _$HomeBannerDataFromJson(Map<String, dynamic> json) =>
+    new HomeBannerData(json['imagePath'] as String, json['url'] as String,
+        json['id'] as int, json['title'] as String);
+
+abstract class _$HomeBannerDataSerializerMixin {
+  String get imagePath;
+  String get url;
+  int get id;
+  String get title;
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'imagePath': imagePath,
+        'url': url,
+        'id': id,
+        'title': title
       };
 }
