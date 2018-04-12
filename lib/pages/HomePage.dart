@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_wanandroid/entity/HomeEntity.dart';
-import 'dart:io';
-import 'package:pdrpulm/pdrpulm.dart';
+import 'package:flutter_wanandroid/widget/LoadMore.dart';
 
 var httpClient = new HttpClient();
 
@@ -41,13 +41,17 @@ class _HomeListState extends State<HomeList> {
 
   @override
   Widget build(BuildContext context) {
-    return new ScrollIndicator(
-      onRefresh: _refresh,
-      child: new ListView.builder(
-        itemBuilder: _buildItem,
-        itemCount: list.length,
-      ),
-    );
+    var result = new RefreshIndicator(
+        child: new LoadMoreWidget(
+          onLoadMore: loadmore,
+          listView: new ListView.builder(
+            physics: const AlwaysScrollableScrollPhysics(),
+            itemBuilder: _buildItem,
+            itemCount: list.length,
+          ),
+        ),
+        onRefresh: _refresh);
+    return result;
   }
 
   Widget _buildItem(BuildContext context, int index) {
@@ -64,31 +68,23 @@ class _HomeListState extends State<HomeList> {
     Map userMap = JSON.decode(json);
     var resp = new HomeEntity.fromJson(userMap);
 
-    if (resp.data.curPage == 1) {
+    var curPage = resp.data.curPage;
+    if (curPage == 1) {
+      this.page = 0;
       list.clear();
     }
     list.addAll(resp.data.datas);
-    page = resp.data.curPage + 1;
     isLoadMore = false;
     isRefresh = false;
+    this.page++;
     setState(() {});
   }
 
-
-  void _dragStart(DragStartDetails details) {
-    print("startX is ${details.globalPosition.dy}");
+  Future<Null> _refresh() async {
+    _loadData(0);
   }
 
-  void _dragUpdate(DragUpdateDetails details) {
-    print("update dis ${details.globalPosition.distance}");
-  }
-
-  void _dragEnd(DragEndDetails details) {
-    print("drag end");
-  }
-
-  Future<Null> _refresh() {
-    _loadData(1);
-    return new Completer().future;
+  Future<Null> loadmore() async {
+    _loadData(page);
   }
 }
