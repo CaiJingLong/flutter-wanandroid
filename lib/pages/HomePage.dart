@@ -4,6 +4,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_wanandroid/entity/HomeEntity.dart';
+import 'package:flutter_wanandroid/pages/WebPage.dart';
+import 'package:flutter_wanandroid/pages/draw/DrawerPage.dart';
 import 'package:flutter_wanandroid/widget/LoadMore.dart';
 
 var httpClient = new HttpClient();
@@ -15,6 +17,7 @@ class HomePage extends StatelessWidget {
       appBar: new AppBar(
         title: new Text('首页'),
       ),
+      drawer: new DrawPage(),
       body: new HomeList(),
     );
   }
@@ -27,7 +30,7 @@ class HomeList extends StatefulWidget {
   _HomeListState createState() => new _HomeListState();
 }
 
-class _HomeListState extends State<HomeList> {
+class _HomeListState extends State<HomeList> with WebPage, TickerProviderStateMixin {
   int page = 0;
   List<HomeData> list = new List();
   var isRefresh = false;
@@ -35,11 +38,20 @@ class _HomeListState extends State<HomeList> {
 
   List<HomeBannerData> bannerList = new List();
 
+  TabController _bannerController;
+
   @override
   void initState() {
     super.initState();
     _loadData(0);
     _loadBanner();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _bannerController.dispose();
   }
 
   @override
@@ -50,46 +62,72 @@ class _HomeListState extends State<HomeList> {
           listView: new ListView.builder(
             physics: const AlwaysScrollableScrollPhysics(),
             itemBuilder: _buildItem,
-            itemCount: list.length,
+            itemCount: list.length + 1,
           ),
         ),
         onRefresh: _refresh);
-    return new Column(
-      children: <Widget>[
-        new SizedBox(
-          height: 200.0,
-          child: _buildBanner(),
-        ),
-        new Expanded(child: content),
-      ],
-    );
+    return content;
   }
 
   Widget _buildBanner() {
-    return new SizedBox(
-      child: new ListView.builder(
-        itemBuilder: _buildBannerItem,
-        scrollDirection: Axis.horizontal,
-        itemCount: bannerList.length,
+    if (_bannerController != null) {
+      _bannerController.dispose();
+    }
+    _bannerController = new TabController(vsync: this, length: bannerList.length);
+
+    return new AspectRatio(
+      aspectRatio: 3 / 1.7,
+      child: new TabBarView(
+        children: bannerList.map(_buildBannerItem).toList(),
+        controller: _bannerController,
       ),
-      height: 300.0,
     );
   }
 
-  Widget _buildBannerItem(BuildContext context, int index) {
-    var data = bannerList[index];
-    return new SizedBox(
-      width: 400.0,
-      height: 300.0,
-      child: new Image.network(data.imagePath),
+  Widget _buildBannerItem(HomeBannerData data) {
+    var color = new Color(Colors.black.value).withAlpha(88);
+
+//    var data = bannerList[index];
+    return new InkWell(
+      child: new Stack(children: <Widget>[
+        new Image.network(
+          data.imagePath,
+          fit: BoxFit.fitWidth,
+        ),
+        new Align(
+          child: new SizedBox(
+            height: 30.0,
+            child: new Scaffold(
+              backgroundColor: color,
+              body: new Center(
+                child: new Text(
+                  data.title,
+                  style: new TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+          ),
+          alignment: Alignment.bottomCenter,
+        ),
+      ]),
+      onTap: () {
+        startUrl(data.url);
+      },
     );
   }
 
   Widget _buildItem(BuildContext context, int index) {
-    var data = list[index];
+    if (index == 0) {
+      return _buildBanner();
+    }
+
+    var data = list[index - 1];
     return new ListTile(
       title: new Text(data.title),
-      subtitle: new Text("作者:$data.author"),
+      subtitle: new Text("作者:${data.author}"),
+      onTap: () {
+        startUrl(data.link);
+      },
     );
   }
 

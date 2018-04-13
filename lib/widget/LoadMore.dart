@@ -6,6 +6,7 @@ const kRefreshOffset = 40.0;
 const kLoadMoreOffset = 0.0;
 
 enum _PullIndicatorMode { idle, dragReleaseRefresh, dragReleaseLoadMore, dragReleaseCancel, refreshing, loading }
+
 typedef Future PullCallback();
 
 class LoadMoreWidget extends StatefulWidget {
@@ -39,18 +40,6 @@ class _LoadMoreState extends State<LoadMoreWidget> {
     if (notification is UserScrollNotification) {}
 
     if (notification is ScrollUpdateNotification) {
-      if (notification.dragDetails == null) {
-        switch (_mode) {
-          case _PullIndicatorMode.dragReleaseLoadMore:
-            changeMode(_PullIndicatorMode.loading);
-            _handleLoadMore();
-            break;
-          case _PullIndicatorMode.dragReleaseCancel:
-            changeMode(_PullIndicatorMode.idle);
-            break;
-          default:
-        }
-      }
 
       _dragOffset -= notification.scrollDelta;
 
@@ -58,9 +47,10 @@ class _LoadMoreState extends State<LoadMoreWidget> {
           _mode == _PullIndicatorMode.dragReleaseRefresh ||
           _mode == _PullIndicatorMode.dragReleaseLoadMore) {
         if (notification.metrics.extentAfter == 0.0 && _dragOffset < -widget.loadMoreOffset) {
-          changeMode(_PullIndicatorMode.dragReleaseLoadMore);
+//          changeMode(_PullIndicatorMode.dragReleaseLoadMore);
+        _handleLoadMore();
         } else if (notification.metrics.extentAfter == 0.0) {
-          changeMode(_PullIndicatorMode.dragReleaseCancel);
+//          changeMode(_PullIndicatorMode.dragReleaseCancel);
         }
       }
     }
