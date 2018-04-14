@@ -3,6 +3,7 @@ import 'package:flutter_wanandroid/pages/HomePage.dart';
 import 'package:flutter_wanandroid/pages/KnowledgePage.dart';
 import 'package:flutter_wanandroid/pages/NaviPage.dart';
 import 'package:flutter_wanandroid/pages/ProjectPage.dart';
+import 'package:flutter_wanandroid/pages/draw/DrawerPage.dart';
 
 void main() => runApp(new MyApp());
 
@@ -24,7 +25,12 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         buttonTheme: new ButtonThemeData(textTheme: ButtonTextTheme.primary),
       ),
-      home: new MainPage(),
+      home: new Scaffold(
+          appBar: new AppBar(
+            title: new Text('玩安卓flutter版'),
+          ),
+          drawer: new DrawerPage(),
+          body: new MainPage()),
     );
   }
 }

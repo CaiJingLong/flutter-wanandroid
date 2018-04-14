@@ -22,7 +22,7 @@ class MainActivity() : FlutterActivity() {
                     @Override
                     override fun onMethodCall(call: MethodCall, result: Result) {
                         if (call.method == "starturl") {
-                            val url = call.argument<String>("url")
+                            val url: String = call.arguments as String
                             WebActivity.startWebResult(this@MainActivity, url)
                         }
                     }

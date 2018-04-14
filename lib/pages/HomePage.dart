@@ -14,10 +14,6 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text('首页'),
-      ),
-      drawer: new DrawPage(),
       body: new HomeList(),
     );
   }
