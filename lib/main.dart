@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
         // or press Run > Flutter Hot Reload in IntelliJ). Notice that the
         // counter didn't reset back to zero; the application is not restarted.
         primarySwatch: Colors.blue,
+        buttonTheme: new ButtonThemeData(textTheme: ButtonTextTheme.primary),
       ),
       home: new MainPage(),
     );

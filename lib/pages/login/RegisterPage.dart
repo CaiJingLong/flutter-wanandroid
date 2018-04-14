@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 
-class KnowledgePage extends StatelessWidget {
+class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new Text("知识");
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text('注册'),
+      ),
+    );
   }
 
-  const KnowledgePage();
+  const RegisterPage();
 }

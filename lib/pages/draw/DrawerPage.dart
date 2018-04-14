@@ -33,11 +33,14 @@ class _DrawPageState extends State<DrawPage> {
                       child: new Align(
                         alignment: Alignment.centerRight,
                         child: new SizedBox(
-                          child: new InkResponse(
-                            child: new Text("登录"),
-                            onTap: () {
-                              login();
-                            },
+                          child: new InkWell(
+                            child: new Text("登录",
+                              style: new TextStyle(
+                                color: Colors.blue,
+                                fontSize: 18.0,
+                              ),
+                            ),
+                            onTap: login,
                           ),
                         ),
                       ),
