@@ -118,12 +118,21 @@ class _HomeListState extends State<HomeList> with WebPage, TickerProviderStateMi
     }
 
     var data = list[index - 1];
-    return new ListTile(
-      title: new Text(data.title),
-      subtitle: new Text("作者:${data.author}"),
-      onTap: () {
-        startUrl(data.link);
-      },
+//    return new ListTile(
+//      title: new Text(data.title),
+//      subtitle: new Text("作者:${data.author}"),
+//      onTap: () {
+//        startUrl(data.link);
+//      },
+//    );
+
+    return new SizedBox(
+      height: 80.0,
+      child: new Stack(
+        children: <Widget>[
+          new Text(data.title),
+        ],
+      ),
     );
   }
 

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_wanandroid/helper/ScaffoldConvert.dart';
+import 'package:flutter_wanandroid/helper/UserInfoHelper.dart';
 import 'package:flutter_wanandroid/pages/login/LoginPage.dart';
 
 class DrawerPage extends StatefulWidget {
@@ -6,9 +8,18 @@ class DrawerPage extends StatefulWidget {
   _DrawPageState createState() => new _DrawPageState();
 }
 
-class _DrawPageState extends State<DrawerPage> {
+class _DrawPageState extends State<DrawerPage> with ScaffoldConvert, UserInfoHelper {
+  var _isLogin = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _isLogin = this.isLogin();
+  }
+
   @override
   Widget build(BuildContext context) {
+    var username = getUserName();
     return new Drawer(
         child: new Scaffold(
       appBar: new AppBar(
@@ -29,8 +40,8 @@ class _DrawPageState extends State<DrawerPage> {
                       new FlutterLogo(
                         size: 40.0,
                       ),
-                      new Center(child: new Text('未登录')),
-                      _buildLoginButton()
+                      new Center(child: new Text(username)),
+                      _buildLoginButton(),
                     ],
                   ),
                 ),
@@ -64,8 +75,18 @@ class _DrawPageState extends State<DrawerPage> {
   }
 
   _checkLogin() {
+    if (isLogin()) {
+      logout();
+      setState(() {});
+      return;
+    }
     Navigator.of(context).push(new MaterialPageRoute(builder: (ctx) {
       return new LoginPage();
-    }));
+    })).then((text) {
+      if (text is String) {
+        showSnackBar(text);
+        setState(() {});
+      }
+    });
   }
 }

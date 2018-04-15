@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_wanandroid/constants/Httpurl.dart';
+import 'package:flutter_wanandroid/helper/HttpHelper.dart';
+import 'package:flutter_wanandroid/helper/ScaffoldConvert.dart';
+import 'package:flutter_wanandroid/helper/UserInfoHelper.dart';
 import 'package:flutter_wanandroid/pages/login/RegisterPage.dart';
 import 'package:flutter_wanandroid/widget/MyTextField.dart';
 
@@ -7,7 +11,7 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => new _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
+class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin, ScaffoldConvert, HttpHelper {
   String user = "";
   String pwd = "";
 
@@ -22,11 +26,9 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         }));
   }
 
-  BuildContext _context;
-
   Widget _buildContent(BuildContext context) {
     var pwdNode = new FocusNode();
-    _context = context;
+    bindScaffoldContext(context);
     return new Padding(
       padding: const EdgeInsets.only(left: 40.0, top: 80.0, right: 40.0),
       child: new Form(
@@ -58,7 +60,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               },
             ),
             createButton('登录', _submit),
-            createButton('注册', _regiseter),
+            createButton('注册', _register),
           ],
         ),
       ),
@@ -86,19 +88,30 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
   void _submit() {
     if (user.isEmpty) {
-      Scaffold.of(_context).showSnackBar(new SnackBar(content: new Text("用户名不能为空")));
+      showSnackBar("用户名不能为空");
       return;
     }
     if (pwd.isEmpty) {
-      Scaffold.of(_context).showSnackBar(new SnackBar(content: new Text("用户名不能为空")));
+      showSnackBar("用户名不能为空");
       return;
     }
     print("$user $pwd");
+    request(HttpUrl.login, method: METHOD.POST, params: {"username": user, "password": pwd}).then((params) {
+      handle(params, () {
+        var data = params["data"];
+        UserInfoHelper.userInfo = new UserInfo(uid: data["id"].toString(), username: data["username"]);
+        Navigator.pop(context, '登陆成功');
+      });
+    });
   }
 
-  void _regiseter() {
+  void _register() {
     Navigator.of(context).push(new MaterialPageRoute(builder: (ctx) {
       return new RegisterPage();
-    }));
+    })).then((text) {
+      if (text is String) {
+        showSnackBar(text);
+      }
+    });
   }
 }
