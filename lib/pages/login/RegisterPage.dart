@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -78,7 +79,7 @@ class _RegisterPageState extends State<RegisterPage> with ScaffoldConvert, HttpH
     );
   }
 
-  void register() {
+  Future register() async {
     if (user == null || user.isEmpty) {
       showSnackBar("用户名不能为空");
       return;
@@ -99,16 +100,14 @@ class _RegisterPageState extends State<RegisterPage> with ScaffoldConvert, HttpH
       return;
     }
 
-    request(HttpUrl.register, method: METHOD.POST, params: {
+    var params = await request(HttpUrl.register, method: METHOD.POST, params: {
       "username": user,
       "password": pwd,
       "repassword": repwd,
-    }).catchError((err) {
-      showErrorSnackBar(err);
-    }).then((params) {
-      handle(params, () {
-        Navigator.of(context).pop("注册成功");
-      });
+    });
+
+    handle(params).then((_) {
+      Navigator.of(context).pop("注册成功");
     });
   }
 

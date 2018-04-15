@@ -9,12 +9,18 @@ class DrawerPage extends StatefulWidget {
 }
 
 class _DrawPageState extends State<DrawerPage> with ScaffoldConvert, UserInfoHelper {
-  var _isLogin = false;
-
   @override
   void initState() {
     super.initState();
-    _isLogin = this.isLogin();
+    bindUserInfoChanged(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    unbindUserInfoChanged();
   }
 
   @override
@@ -61,7 +67,7 @@ class _DrawPageState extends State<DrawerPage> with ScaffoldConvert, UserInfoHel
         child: new SizedBox(
           child: new InkWell(
             child: new Text(
-              "登录",
+              isLogin() ? "登出" : "登录",
               style: new TextStyle(
                 color: Colors.blue,
                 fontSize: 18.0,
@@ -76,7 +82,7 @@ class _DrawPageState extends State<DrawerPage> with ScaffoldConvert, UserInfoHel
 
   _checkLogin() {
     if (isLogin()) {
-      logout();
+      UserInfoHelper.logout();
       setState(() {});
       return;
     }

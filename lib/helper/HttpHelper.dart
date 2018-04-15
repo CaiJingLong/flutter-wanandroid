@@ -9,7 +9,7 @@ final HttpClient _client = new HttpClient();
 
 enum METHOD { POST, GET, PUT, DELETE }
 
-abstract class HttpHelper extends ScaffoldConvert {
+abstract class HttpHelper {
   Future<Map<String, dynamic>> request(String path, {METHOD method = METHOD.GET, Map<String, String> params}) async {
     HttpClientRequest request;
     var uri = new Uri.http(_baseUrl, path, params);
@@ -34,11 +34,11 @@ abstract class HttpHelper extends ScaffoldConvert {
     return map;
   }
 
-  void handle(Map<String, dynamic> params, Function success) {
+  Future<Map<String, dynamic>> handle(Map<String, dynamic> params) async {
     if (params["errorCode"] == 0) {
-      success();
+      throw new CodeError(params["errorMsg"]);
     } else {
-      this.showSnackBar(params["errorMsg"]);
+      return params;
     }
   }
 }

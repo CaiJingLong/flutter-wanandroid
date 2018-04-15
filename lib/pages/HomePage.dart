@@ -4,8 +4,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_wanandroid/entity/HomeEntity.dart';
+import 'package:flutter_wanandroid/helper/HttpHelper.dart';
+import 'package:flutter_wanandroid/helper/ScaffoldConvert.dart';
+import 'package:flutter_wanandroid/helper/UserInfoHelper.dart';
 import 'package:flutter_wanandroid/pages/WebPage.dart';
 import 'package:flutter_wanandroid/pages/draw/DrawerPage.dart';
+import 'package:flutter_wanandroid/pages/login/LoginPage.dart';
 import 'package:flutter_wanandroid/widget/LoadMore.dart';
 
 var httpClient = new HttpClient();
@@ -26,7 +30,8 @@ class HomeList extends StatefulWidget {
   _HomeListState createState() => new _HomeListState();
 }
 
-class _HomeListState extends State<HomeList> with WebPage, TickerProviderStateMixin {
+class _HomeListState extends State<HomeList>
+    with WebPage, TickerProviderStateMixin, UserInfoHelper, HttpHelper, ScaffoldConvert {
   int page = 0;
   List<HomeData> list = new List();
   var isRefresh = false;
@@ -41,6 +46,9 @@ class _HomeListState extends State<HomeList> with WebPage, TickerProviderStateMi
     super.initState();
     _loadData(0);
     _loadBanner();
+    bindUserInfoChanged(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -48,6 +56,7 @@ class _HomeListState extends State<HomeList> with WebPage, TickerProviderStateMi
     // TODO: implement dispose
     super.dispose();
     _bannerController.dispose();
+    unbindUserInfoChanged();
   }
 
   @override
@@ -62,7 +71,10 @@ class _HomeListState extends State<HomeList> with WebPage, TickerProviderStateMi
           ),
         ),
         onRefresh: _refresh);
-    return content;
+    return new Builder(builder: (ctx) {
+      bindScaffoldContext(ctx);
+      return content;
+    });
   }
 
   Widget _buildBanner() {
@@ -126,13 +138,41 @@ class _HomeListState extends State<HomeList> with WebPage, TickerProviderStateMi
 //      },
 //    );
 
-    return new SizedBox(
-      height: 80.0,
-      child: new Stack(
-        children: <Widget>[
-          new Text(data.title),
-        ],
-      ),
+    return new Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: new SizedBox(
+          height: 68.0,
+          child: new Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              new Text(
+                data.title,
+                maxLines: 1,
+                style: new TextStyle(fontSize: 16.0),
+              ),
+              new Text(
+                data.author,
+                style: new TextStyle(fontSize: 14.0),
+              ),
+              new Stack(
+                children: <Widget>[
+                  new Text(
+                    data.chapterName,
+                    style: new TextStyle(fontSize: 14.0, color: Colors.blue),
+                  ),
+                  new InkWell(
+                    onTap: () {
+                      _like(data);
+                    },
+                    child: new Align(
+                      alignment: Alignment.centerRight,
+                      child: new Icon(data.zan == 1 ? Icons.star : Icons.star_border),
+                    ),
+                  )
+                ],
+              ),
+            ],
+          )),
     );
   }
 
@@ -177,5 +217,14 @@ class _HomeListState extends State<HomeList> with WebPage, TickerProviderStateMi
     bannerList.clear();
     bannerList.addAll(resp.data);
     setState(() {});
+  }
+
+  void _like(HomeData data) {
+    if (!isLogin()) {
+      Navigator.of(context).push(new MaterialPageRoute(builder: (ctx) {
+        return new LoginPage();
+      }));
+      return;
+    }
   }
 }

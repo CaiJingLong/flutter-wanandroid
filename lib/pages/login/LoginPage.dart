@@ -1,10 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_wanandroid/constants/Httpurl.dart';
 import 'package:flutter_wanandroid/helper/HttpHelper.dart';
 import 'package:flutter_wanandroid/helper/ScaffoldConvert.dart';
 import 'package:flutter_wanandroid/helper/UserInfoHelper.dart';
 import 'package:flutter_wanandroid/pages/login/RegisterPage.dart';
-import 'package:flutter_wanandroid/widget/MyTextField.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -86,7 +87,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin, Sc
     );
   }
 
-  void _submit() {
+  Future _submit() async {
     if (user.isEmpty) {
       showSnackBar("用户名不能为空");
       return;
@@ -96,12 +97,12 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin, Sc
       return;
     }
     print("$user $pwd");
-    request(HttpUrl.login, method: METHOD.POST, params: {"username": user, "password": pwd}).then((params) {
-      handle(params, () {
-        var data = params["data"];
-        UserInfoHelper.userInfo = new UserInfo(uid: data["id"].toString(), username: data["username"]);
-        Navigator.pop(context, '登陆成功');
-      });
+    var params = await request(HttpUrl.login, method: METHOD.POST, params: {"username": user, "password": pwd});
+
+    handle(params).then((params) {
+      var data = params["data"];
+      UserInfoHelper.setUserInfo(new UserInfo(uid: data["id"].toString(), username: data["username"]));
+      Navigator.pop(context, '登陆成功');
     });
   }
 

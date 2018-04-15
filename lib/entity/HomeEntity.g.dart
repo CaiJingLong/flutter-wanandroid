@@ -48,7 +48,12 @@ HomeData _$HomeDataFromJson(Map<String, dynamic> json) => new HomeData(
     json['author'] as String,
     json['id'] as int,
     json['title'] as String,
-    json['fresh'] as bool);
+    json['fresh'] as bool,
+    json['chapterName'] as String,
+    json['zan'] as int,
+)
+
+;
 
 abstract class _$HomeDataSerializerMixin {
   String get link;
