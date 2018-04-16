@@ -29,13 +29,13 @@ class _LoadMoreState extends State<LoadMore> {
 
   _PullIndicatorMode _mode;
 
-  bool enableLoadMore = false;
+  bool enableLoadMore = true;
 
   @override
   Widget build(BuildContext context) {
-    if(widget.child is ListView){
-      return widget.child;
-    }
+//    if(widget.child is ListView && enableLoadMore){
+//      return widget.child;
+//    }
     return new NotificationListener(
       onNotification: _handleScrollNotification,
       child: widget.child,
@@ -79,6 +79,9 @@ class _LoadMoreState extends State<LoadMore> {
   }
 
   void _handleLoadMore() {
+    if (!enableLoadMore) {
+      return;
+    }
     if (widget.onLoadMore != null) {
       handleResult(widget.onLoadMore());
     }

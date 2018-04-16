@@ -72,14 +72,11 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-//    _tabController = new TabController(vsync: this, length: tabs.length);
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
 //    _tabController.dispose();
   }

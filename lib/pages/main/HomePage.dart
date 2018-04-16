@@ -61,7 +61,6 @@ class _HomeListState extends State<HomeList>
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _bannerController.dispose();
 //    unbindUserInfoChanged();
