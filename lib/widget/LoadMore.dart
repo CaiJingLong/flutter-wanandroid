@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 const kRefreshOffset = 40.0;
@@ -9,29 +10,43 @@ enum _PullIndicatorMode { idle, dragReleaseRefresh, dragReleaseLoadMore, dragRel
 
 typedef Future PullCallback();
 
-class LoadMoreWidget extends StatefulWidget {
-  final ListView listView;
+class LoadMore extends StatefulWidget {
+  final Widget child;
   final PullCallback onLoadMore;
 
   final double loadMoreOffset;
 
-  LoadMoreWidget({this.listView, this.onLoadMore, this.loadMoreOffset = kLoadMoreOffset});
+  final NotificationListenerCallback<ScrollNotification> scrollNotification;
+
+  LoadMore({@required this.child, this.onLoadMore, this.loadMoreOffset = kLoadMoreOffset, this.scrollNotification});
 
   @override
   _LoadMoreState createState() => new _LoadMoreState();
 }
 
-class _LoadMoreState extends State<LoadMoreWidget> {
+class _LoadMoreState extends State<LoadMore> {
   double _dragOffset;
 
   _PullIndicatorMode _mode;
 
+  bool enableLoadMore = false;
+
   @override
   Widget build(BuildContext context) {
-    return new NotificationListener(onNotification: _handleScrollNotification, child: widget.listView);
+    if(widget.child is ListView){
+      return widget.child;
+    }
+    return new NotificationListener(
+      onNotification: _handleScrollNotification,
+      child: widget.child,
+    );
   }
 
   bool _handleScrollNotification(ScrollNotification notification) {
+    if (widget.scrollNotification != null) {
+      widget.scrollNotification(notification);
+    }
+
     if (notification is ScrollStartNotification) {
       _dragOffset = 0.0;
       _mode = _PullIndicatorMode.dragReleaseCancel;
@@ -40,7 +55,6 @@ class _LoadMoreState extends State<LoadMoreWidget> {
     if (notification is UserScrollNotification) {}
 
     if (notification is ScrollUpdateNotification) {
-
       _dragOffset -= notification.scrollDelta;
 
       if (_mode == _PullIndicatorMode.dragReleaseCancel ||
@@ -48,7 +62,7 @@ class _LoadMoreState extends State<LoadMoreWidget> {
           _mode == _PullIndicatorMode.dragReleaseLoadMore) {
         if (notification.metrics.extentAfter == 0.0 && _dragOffset < -widget.loadMoreOffset) {
 //          changeMode(_PullIndicatorMode.dragReleaseLoadMore);
-        _handleLoadMore();
+          _handleLoadMore();
         } else if (notification.metrics.extentAfter == 0.0) {
 //          changeMode(_PullIndicatorMode.dragReleaseCancel);
         }

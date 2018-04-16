@@ -100,7 +100,7 @@ class _RegisterPageState extends State<RegisterPage> with ScaffoldConvert, HttpH
       return;
     }
 
-    var params = await request(HttpUrl.register, method: METHOD.POST, params: {
+    var params = await requestParams(HttpUrl.register, method: METHOD.POST, params: {
       "username": user,
       "password": pwd,
       "repassword": repwd,

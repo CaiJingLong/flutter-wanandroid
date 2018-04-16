@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_wanandroid/pages/HomePage.dart';
-import 'package:flutter_wanandroid/pages/KnowledgePage.dart';
-import 'package:flutter_wanandroid/pages/NaviPage.dart';
-import 'package:flutter_wanandroid/pages/ProjectPage.dart';
+import 'package:flutter_wanandroid/pages/main/HomePage.dart';
+import 'package:flutter_wanandroid/pages/main/HotPage.dart';
+import 'package:flutter_wanandroid/pages/main/KnowledgePage.dart';
+import 'package:flutter_wanandroid/pages/main/NaviPage.dart';
+import 'package:flutter_wanandroid/pages/main/ProjectPage.dart';
 import 'package:flutter_wanandroid/pages/draw/DrawerPage.dart';
 
 void main() => runApp(new MyApp());
@@ -28,28 +29,71 @@ class MyApp extends StatelessWidget {
       home: new Scaffold(
           appBar: new AppBar(
             title: new Text('玩安卓flutter版'),
+            actions: <Widget>[
+              _buildAction(Icons.whatshot, hot),
+              _buildAction(Icons.search, search),
+            ],
           ),
           drawer: new DrawerPage(),
           body: new MainPage()),
     );
   }
+
+  Widget _buildAction(IconData data, Function pressed) {
+    return new Builder(builder: (ctx) {
+      return new IconButton(
+          icon: new Icon(data),
+          onPressed: () {
+            pressed(ctx);
+          });
+    });
+  }
+
+  hot(BuildContext context) {
+    Navigator.of(context).push(new MaterialPageRoute(builder: (ctx) {
+      return new HotPage();
+    }));
+  }
+
+  search(BuildContext context) {}
 }
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
+  @override
+  _MainPageState createState() {
+    return new _MainPageState();
+  }
+}
+
+class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin {
+  var map = new Map<Page, Widget>();
+
+//  TabController _tabController;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+//    _tabController = new TabController(vsync: this, length: tabs.length);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+//    _tabController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     var tabbar = new TabBar(
-//      labelColor: Colors.blue,
-//      unselectedLabelColor: Colors.white,
       tabs: tabs.map((Page page) {
         return new Tab(
           text: page.title,
           icon: page.icon,
         );
       }).toList(),
-      indicator: new BoxDecoration(
-//        color: Colors.white,
-          ),
+      indicator: new BoxDecoration(),
     );
 
     var page = new Scaffold(
@@ -59,7 +103,12 @@ class MainPage extends StatelessWidget {
       ),
       body: new TabBarView(
         children: tabs.map((Page page) {
-          return page.page;
+          var widget = map[page];
+          if (widget == null) {
+            widget = page.page;
+            map[page] = widget;
+          }
+          return widget;
         }).toList(),
       ),
     );

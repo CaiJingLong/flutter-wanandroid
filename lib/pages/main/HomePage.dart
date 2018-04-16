@@ -5,20 +5,23 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_wanandroid/entity/HomeEntity.dart';
 import 'package:flutter_wanandroid/helper/HttpHelper.dart';
+import 'package:flutter_wanandroid/helper/PageHelper.dart';
 import 'package:flutter_wanandroid/helper/ScaffoldConvert.dart';
 import 'package:flutter_wanandroid/helper/UserInfoHelper.dart';
+import 'package:flutter_wanandroid/pages/LikePage.dart';
 import 'package:flutter_wanandroid/pages/WebPage.dart';
-import 'package:flutter_wanandroid/pages/draw/DrawerPage.dart';
 import 'package:flutter_wanandroid/pages/login/LoginPage.dart';
 import 'package:flutter_wanandroid/widget/LoadMore.dart';
 
 var httpClient = new HttpClient();
 
+HomeList _homeChild = new HomeList();
+
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      body: new HomeList(),
+      body: _homeChild,
     );
   }
 
@@ -27,28 +30,33 @@ class HomePage extends StatelessWidget {
 
 class HomeList extends StatefulWidget {
   @override
-  _HomeListState createState() => new _HomeListState();
+  _HomeListState createState() {
+    return new _HomeListState();
+  }
 }
 
+PageHelper _helper = new PageHelper<HomeData>();
+
+List<HomeBannerData> _bannerList = new List();
+
 class _HomeListState extends State<HomeList>
-    with WebPage, TickerProviderStateMixin, UserInfoHelper, HttpHelper, ScaffoldConvert {
-  int page = 0;
-  List<HomeData> list = new List();
+    with WebPage, TickerProviderStateMixin, UserInfoHelper, HttpHelper, ScaffoldConvert, HomeItem, LikePage {
   var isRefresh = false;
   var isLoadMore = false;
-
-  List<HomeBannerData> bannerList = new List();
 
   TabController _bannerController;
 
   @override
   void initState() {
     super.initState();
-    _loadData(0);
-    _loadBanner();
-    bindUserInfoChanged(() {
-      setState(() {});
+    _helper.init(() {
+      _loadData(0);
+      _loadBanner();
     });
+
+//    bindUserInfoChanged(() {
+//      setState(() {});
+//    });
   }
 
   @override
@@ -56,18 +64,21 @@ class _HomeListState extends State<HomeList>
     // TODO: implement dispose
     super.dispose();
     _bannerController.dispose();
-    unbindUserInfoChanged();
+//    unbindUserInfoChanged();
   }
 
   @override
   Widget build(BuildContext context) {
+    var _ctl = _helper.createController();
     var content = new RefreshIndicator(
-        child: new LoadMoreWidget(
-          onLoadMore: loadmore,
-          listView: new ListView.builder(
+        child: new LoadMore(
+          onLoadMore: loadMore,
+          scrollNotification: _helper.handle,
+          child: new ListView.builder(
             physics: const AlwaysScrollableScrollPhysics(),
             itemBuilder: _buildItem,
-            itemCount: list.length + 1,
+            itemCount: _helper.itemCount() + 1,
+            controller: _ctl,
           ),
         ),
         onRefresh: _refresh);
@@ -81,12 +92,12 @@ class _HomeListState extends State<HomeList>
     if (_bannerController != null) {
       _bannerController.dispose();
     }
-    _bannerController = new TabController(vsync: this, length: bannerList.length);
+    _bannerController = new TabController(vsync: this, length: _bannerList.length);
 
     return new AspectRatio(
       aspectRatio: 3 / 1.7,
       child: new TabBarView(
-        children: bannerList.map(_buildBannerItem).toList(),
+        children: _bannerList.map(_buildBannerItem).toList(),
         controller: _bannerController,
       ),
     );
@@ -129,71 +140,28 @@ class _HomeListState extends State<HomeList>
       return _buildBanner();
     }
 
-    var data = list[index - 1];
-//    return new ListTile(
-//      title: new Text(data.title),
-//      subtitle: new Text("作者:${data.author}"),
-//      onTap: () {
-//        startUrl(data.link);
-//      },
-//    );
-
-    return new Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: new SizedBox(
-          height: 68.0,
-          child: new Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              new Text(
-                data.title,
-                maxLines: 1,
-                style: new TextStyle(fontSize: 16.0),
-              ),
-              new Text(
-                data.author,
-                style: new TextStyle(fontSize: 14.0),
-              ),
-              new Stack(
-                children: <Widget>[
-                  new Text(
-                    data.chapterName,
-                    style: new TextStyle(fontSize: 14.0, color: Colors.blue),
-                  ),
-                  new InkWell(
-                    onTap: () {
-                      _like(data);
-                    },
-                    child: new Align(
-                      alignment: Alignment.centerRight,
-                      child: new Icon(data.zan == 1 ? Icons.star : Icons.star_border),
-                    ),
-                  )
-                ],
-              ),
-            ],
-          )),
-    );
+    var data = _helper.datas[index - 1];
+    return buildHomeItem(context, data);
   }
 
   void _loadData(int page) async {
     var uri = new Uri.http("www.wanandroid.com", "article/list/$page/json");
     var request = await httpClient.getUrl(uri);
     var response = await request.close();
-    var json = await response.transform(UTF8.decoder).join();
+    var string = await response.transform(UTF8.decoder).join();
 
-    Map userMap = JSON.decode(json);
+    Map userMap = json.decode(string);
     var resp = new HomeEntity.fromJson(userMap);
 
     var curPage = resp.data.curPage;
     if (curPage == 1) {
-      this.page = 0;
-      list.clear();
+      _helper.page = 0;
+      _helper.datas.clear();
     }
-    list.addAll(resp.data.datas);
+    _helper.datas.addAll(resp.data.datas);
     isLoadMore = false;
     isRefresh = false;
-    this.page++;
+    _helper.page++;
     setState(() {});
   }
 
@@ -201,8 +169,8 @@ class _HomeListState extends State<HomeList>
     _loadData(0);
   }
 
-  Future<Null> loadmore() async {
-    _loadData(page);
+  Future<Null> loadMore() async {
+    _loadData(_helper.page);
   }
 
   void _loadBanner() async {
@@ -214,8 +182,8 @@ class _HomeListState extends State<HomeList>
     Map userMap = JSON.decode(json);
     var resp = new HomeBannerEntity.fromJson(userMap);
 
-    bannerList.clear();
-    bannerList.addAll(resp.data);
+    _bannerList.clear();
+    _bannerList.addAll(resp.data);
     setState(() {});
   }
 
@@ -226,5 +194,57 @@ class _HomeListState extends State<HomeList>
       }));
       return;
     }
+  }
+}
+
+abstract class HomeItem extends WebPage with LikePage {
+  InkWell buildHomeItem(BuildContext context, HomeData data) {
+    return new InkWell(
+      onTap: () {
+        startUrl(data.link);
+      },
+      child: new Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: new SizedBox(
+            height: 74.0,
+            child: new Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                new Text(
+                  data.title,
+                  maxLines: 1,
+                  style: new TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
+                ),
+                new Padding(
+                  padding: const EdgeInsets.only(top: 3.0),
+                  child: new Text(
+                    data.author,
+                    style: new TextStyle(fontSize: 14.0),
+                  ),
+                ),
+                new Stack(
+                  children: <Widget>[
+                    new Padding(
+                      padding: const EdgeInsets.only(top: 3.0),
+                      child: new Text(
+                        data.chapterName,
+                        style: new TextStyle(fontSize: 14.0, color: Colors.blue),
+                      ),
+                    ),
+                    new InkWell(
+                      onTap: () {
+                        like(context, data);
+                      },
+                      child: new Align(
+                        alignment: Alignment.centerRight,
+                        child: new Icon(data.zan == 1 ? Icons.star : Icons.star_border),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            )),
+      ),
+    );
   }
 }

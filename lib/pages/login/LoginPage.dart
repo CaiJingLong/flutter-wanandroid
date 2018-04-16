@@ -97,7 +97,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin, Sc
       return;
     }
     print("$user $pwd");
-    var params = await request(HttpUrl.login, method: METHOD.POST, params: {"username": user, "password": pwd});
+    var params = await requestParams(HttpUrl.login, method: METHOD.POST, params: {"username": user, "password": pwd});
 
     handle(params).then((params) {
       var data = params["data"];
