@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_wanandroid/helper/ScaffoldConvert.dart';
+import 'package:flutter_wanandroid/helper/ScaffoldHelper.dart';
 import 'package:flutter_wanandroid/helper/UserInfoHelper.dart';
 import 'package:flutter_wanandroid/pages/login/LoginPage.dart';
 
@@ -8,7 +8,7 @@ class DrawerPage extends StatefulWidget {
   _DrawPageState createState() => new _DrawPageState();
 }
 
-class _DrawPageState extends State<DrawerPage> with ScaffoldConvert, UserInfoHelper {
+class _DrawPageState extends State<DrawerPage> with ScaffoldHelper, UserInfoHelper {
   @override
   void initState() {
     super.initState();

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_wanandroid/helper/HttpHelper.dart';
 
-abstract class ScaffoldConvert {
+abstract class ScaffoldHelper {
   BuildContext scaffoldBuildContext;
 
   void showSnackBar(String text, {int second = 3}) {

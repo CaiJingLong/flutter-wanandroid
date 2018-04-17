@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_wanandroid/entity/HomeEntity.dart';
 import 'package:flutter_wanandroid/helper/HttpHelper.dart';
 import 'package:flutter_wanandroid/helper/PageHelper.dart';
-import 'package:flutter_wanandroid/helper/ScaffoldConvert.dart';
+import 'package:flutter_wanandroid/helper/ScaffoldHelper.dart';
 import 'package:flutter_wanandroid/helper/UserInfoHelper.dart';
 import 'package:flutter_wanandroid/pages/LikePage.dart';
 import 'package:flutter_wanandroid/pages/WebPage.dart';
@@ -40,7 +40,7 @@ PageHelper _helper = new PageHelper<HomeData>();
 List<HomeBannerData> _bannerList = new List();
 
 class _HomeListState extends State<HomeList>
-    with WebPage, TickerProviderStateMixin, UserInfoHelper, HttpHelper, ScaffoldConvert, HomeItem, LikePage {
+    with WebPage, TickerProviderStateMixin, UserInfoHelper, HttpHelper, ScaffoldHelper, HomeItem, LikePage {
   var isRefresh = false;
   var isLoadMore = false;
 

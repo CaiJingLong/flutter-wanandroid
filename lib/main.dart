@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_wanandroid/entity/index.dart';
 import 'package:flutter_wanandroid/helper/PageHelper.dart';
+import 'package:flutter_wanandroid/helper/index.dart';
 import 'package:flutter_wanandroid/pages/Index.dart';
+import 'package:flutter_wanandroid/pages/index.dart';
 
 void main() => runApp(new MyApp());
 
@@ -26,6 +28,16 @@ final List<Page> tabs = [
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) => new _MyApp();
+}
+
+class _MyApp extends StatefulWidget {
+  @override
+  __MyAppState createState() => new __MyAppState();
+}
+
+class __MyAppState extends State<_MyApp> with NavigatorHelper {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
@@ -71,7 +83,9 @@ class MyApp extends StatelessWidget {
     }));
   }
 
-  search(BuildContext context) {}
+  search(BuildContext context) {
+    push(context, new SearchIndexPage());
+  }
 }
 
 class MainPage extends StatefulWidget {

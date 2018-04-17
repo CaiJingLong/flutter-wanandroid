@@ -1,5 +1,4 @@
 class HttpUrl {
-
   /// 登录
   /// username，password
   static var login = "user/login";
@@ -33,5 +32,11 @@ class HttpUrl {
   /// params cid
   static String subProject(int page) {
     return "/project/list/$page/json";
+  }
+
+  /// 搜索
+  /// params [k] is key
+  static String search(int page) {
+    return "article/query/$page/json";
   }
 }

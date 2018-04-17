@@ -15,7 +15,7 @@ class ProjectDetailPage extends StatefulWidget {
   _ProjectDetailPageState createState() => new _ProjectDetailPageState();
 }
 
-class _ProjectDetailPageState extends State<ProjectDetailPage> with HttpHelper, PushHelper {
+class _ProjectDetailPageState extends State<ProjectDetailPage> with HttpHelper, NavigatorHelper {
   PageHelper<SubProjectData> _helper = new PageHelper();
 
   @override

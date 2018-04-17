@@ -4,14 +4,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_wanandroid/constants/Httpurl.dart';
 import 'package:flutter_wanandroid/helper/HttpHelper.dart';
-import 'package:flutter_wanandroid/helper/ScaffoldConvert.dart';
+import 'package:flutter_wanandroid/helper/ScaffoldHelper.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
   _RegisterPageState createState() => new _RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> with ScaffoldConvert, HttpHelper {
+class _RegisterPageState extends State<RegisterPage> with ScaffoldHelper, HttpHelper {
   String user;
 
   String pwd;

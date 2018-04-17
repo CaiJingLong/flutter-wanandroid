@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_wanandroid/constants/Httpurl.dart';
 import 'package:flutter_wanandroid/helper/HttpHelper.dart';
-import 'package:flutter_wanandroid/helper/ScaffoldConvert.dart';
+import 'package:flutter_wanandroid/helper/ScaffoldHelper.dart';
 import 'package:flutter_wanandroid/helper/UserInfoHelper.dart';
 import 'package:flutter_wanandroid/pages/login/RegisterPage.dart';
 
@@ -12,7 +12,7 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => new _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin, ScaffoldConvert, HttpHelper {
+class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin, ScaffoldHelper, HttpHelper {
   String user = "";
   String pwd = "";
 
