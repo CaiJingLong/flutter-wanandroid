@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_wanandroid/constants/Httpurl.dart';
 import 'package:flutter_wanandroid/entity/TreeEntity.dart';
 import 'package:flutter_wanandroid/helper/HttpHelper.dart';
-import 'package:flutter_wanandroid/helper/JsonHelper.dart';
+import 'package:flutter_wanandroid/helper/PageHelper.dart';
 import 'package:flutter_wanandroid/pages/tree/SubTreePage.dart';
 
+/// 知识体系
 class KnowledgePage extends StatefulWidget {
+  final PageHelper<TreeEntity> pageHelper;
+
   @override
   _KnowledgePageState createState() => new _KnowledgePageState();
 
-  const KnowledgePage();
+  KnowledgePage(this.pageHelper);
 }
 
 class _KnowledgePageState extends State<KnowledgePage> with HttpHelper {
@@ -18,22 +21,29 @@ class _KnowledgePageState extends State<KnowledgePage> with HttpHelper {
   @override
   void initState() {
     super.initState();
-    _loadData();
+    this.datas = widget.pageHelper.datas;
+    widget.pageHelper.init(() {
+      _loadData();
+    });
   }
 
   _loadData() async {
     var json = await requestString(HttpUrl.tree);
     var datas = TreeEntity.decode(json);
     this.datas.addAll(datas);
-    setState((){});
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      body: new ListView.builder(
-        itemBuilder: _buildItem,
-        itemCount: datas.length,
+      body: new NotificationListener(
+        onNotification: widget.pageHelper.handle,
+        child: new ListView.builder(
+          itemBuilder: _buildItem,
+          itemCount: datas.length,
+          controller: widget.pageHelper.createController(),
+        ),
       ),
     );
   }

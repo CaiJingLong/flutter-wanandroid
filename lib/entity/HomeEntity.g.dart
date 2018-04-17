@@ -50,10 +50,7 @@ HomeData _$HomeDataFromJson(Map<String, dynamic> json) => new HomeData(
     json['title'] as String,
     json['fresh'] as bool,
     json['chapterName'] as String,
-    json['zan'] as int,
-)
-
-;
+    json['zan'] as int);
 
 abstract class _$HomeDataSerializerMixin {
   String get link;
@@ -61,12 +58,16 @@ abstract class _$HomeDataSerializerMixin {
   int get id;
   String get title;
   bool get fresh;
+  String get chapterName;
+  int get zan;
   Map<String, dynamic> toJson() => <String, dynamic>{
         'link': link,
         'author': author,
         'id': id,
         'title': title,
-        'fresh': fresh
+        'fresh': fresh,
+        'chapterName': chapterName,
+        'zan': zan
       };
 }
 

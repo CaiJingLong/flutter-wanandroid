@@ -2,17 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_wanandroid/constants/Httpurl.dart';
-import 'package:flutter_wanandroid/entity/HomeEntity.dart';
-import 'package:flutter_wanandroid/entity/TreeEntity.dart';
-import 'package:flutter_wanandroid/helper/HttpHelper.dart';
-import 'package:flutter_wanandroid/helper/JsonHelper.dart';
-import 'package:flutter_wanandroid/helper/PageHelper.dart';
-import 'package:flutter_wanandroid/helper/UserInfoHelper.dart';
-import 'package:flutter_wanandroid/pages/LikePage.dart';
-import 'package:flutter_wanandroid/pages/WebPage.dart';
-import 'package:flutter_wanandroid/pages/main/HomePage.dart';
-import 'package:flutter_wanandroid/widget/LoadMore.dart';
+import 'package:flutter_wanandroid/Engine.dart';
+import 'package:flutter_wanandroid/pages/index.dart';
+import 'package:flutter_wanandroid/pages/main/index.dart';
 
 class SubTreePage extends StatefulWidget {
   final String name;
@@ -31,7 +23,6 @@ class _SubTreePageState extends State<SubTreePage> with SingleTickerProviderStat
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     for (var _ in widget.subTreeEntity) {
       pageHelpers.add(new PageHelper());
@@ -41,7 +32,6 @@ class _SubTreePageState extends State<SubTreePage> with SingleTickerProviderStat
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _ctl.dispose();
   }
@@ -102,7 +92,6 @@ class _SubPage extends StatefulWidget {
 class __SubPageState extends State<_SubPage> with WebPage, LikePage, HomeItem, HttpHelper, UserInfoHelper {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     widget.pageHelper.init(() {
       _loadData(0);
@@ -111,19 +100,20 @@ class __SubPageState extends State<_SubPage> with WebPage, LikePage, HomeItem, H
 
   @override
   Widget build(BuildContext context) {
-    return new RefreshIndicator(
+    return new RefreshWidget(
       onRefresh: _refresh,
-      child: new LoadMore(
-        child: new ListView.builder(
-          itemBuilder: _buildItem,
-        ),
-        onLoadMore: _loadMore,
+      scrollHelper: widget.pageHelper,
+      child: new ListView.builder(
+        controller: widget.pageHelper.createController(),
+        itemBuilder: _buildItem,
+        physics: new AlwaysScrollableScrollPhysics(),
+        itemCount: widget.pageHelper.datas.length,
       ),
+      onLoadMore: _loadMore,
     );
   }
 
   Widget _buildItem(BuildContext context, int index) {
-    print("datas ${widget.pageHelper.datas} index = $index}");
     return buildHomeItem(context, widget.pageHelper.datas[index]);
   }
 
@@ -131,17 +121,18 @@ class __SubPageState extends State<_SubPage> with WebPage, LikePage, HomeItem, H
     var string = await requestString(HttpUrl.subTreeList(page), params: {"cid": widget.cid.toString()});
     Map userMap = json.decode(string);
     var resp = new HomeEntity.fromJson(userMap);
-    print(resp);
     widget.pageHelper.addData(resp.data.datas, clear: page == 0);
+    if (resp.data.datas.isEmpty) {
+      widget.pageHelper.isFinish = true;
+    }
     setState(() {});
   }
 
   Future<Null> _refresh() async {
-    return new Completer<Null>().future;
+    _loadData(0);
   }
 
   Future _loadMore() async {
     _loadData(widget.pageHelper.page);
-    return new Completer().future;
   }
 }

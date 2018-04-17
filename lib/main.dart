@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_wanandroid/Engine.dart';
+import 'package:flutter_wanandroid/helper/index.dart';
 import 'package:flutter_wanandroid/pages/main/HomePage.dart';
 import 'package:flutter_wanandroid/pages/main/HotPage.dart';
 import 'package:flutter_wanandroid/pages/main/KnowledgePage.dart';
@@ -7,6 +9,23 @@ import 'package:flutter_wanandroid/pages/main/ProjectPage.dart';
 import 'package:flutter_wanandroid/pages/draw/DrawerPage.dart';
 
 void main() => runApp(new MyApp());
+
+class Page {
+  final String title;
+  final Icon icon;
+  final Widget page;
+
+  const Page(this.title, this.icon, this.page);
+}
+
+final PageHelper<TreeEntity> _knowHelper = new PageHelper();
+
+final List<Page> tabs = [
+  const Page("首页", const Icon(Icons.home), const HomePage()),
+  new Page("知识体系", const Icon(Icons.book), new KnowledgePage(_knowHelper)),
+  const Page("导航", const Icon(Icons.bookmark_border), const NaviPage()),
+  const Page("项目", const Icon(Icons.apps), const ProjectPage()),
+];
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -113,18 +132,3 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
     return new DefaultTabController(length: tabs.length, child: page);
   }
 }
-
-class Page {
-  final String title;
-  final Icon icon;
-  final Widget page;
-
-  const Page(this.title, this.icon, this.page);
-}
-
-const List<Page> tabs = const <Page>[
-  const Page("首页", const Icon(Icons.home), const HomePage()),
-  const Page("知识体系", const Icon(Icons.book), const KnowledgePage()),
-  const Page("导航", const Icon(Icons.bookmark_border), const NaviPage()),
-  const Page("项目", const Icon(Icons.apps), const ProjectPage()),
-];

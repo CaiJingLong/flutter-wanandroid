@@ -18,7 +18,18 @@ class LoadMore extends StatefulWidget {
 
   final NotificationListenerCallback<ScrollNotification> scrollNotification;
 
-  LoadMore({@required this.child, this.onLoadMore, this.loadMoreOffset = kLoadMoreOffset, this.scrollNotification});
+  final bool enableLoadMore;
+
+  final bool isFinish;
+
+  LoadMore({
+    @required this.child,
+    this.onLoadMore,
+    this.loadMoreOffset = kLoadMoreOffset,
+    this.scrollNotification,
+    this.enableLoadMore = true,
+    this.isFinish = false,
+  });
 
   @override
   _LoadMoreState createState() => new _LoadMoreState();
@@ -28,8 +39,6 @@ class _LoadMoreState extends State<LoadMore> {
   double _dragOffset;
 
   _PullIndicatorMode _mode;
-
-  bool enableLoadMore = true;
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +88,7 @@ class _LoadMoreState extends State<LoadMore> {
   }
 
   void _handleLoadMore() {
-    if (!enableLoadMore) {
+    if (!widget.enableLoadMore || widget.isFinish) {
       return;
     }
     if (widget.onLoadMore != null) {
@@ -114,4 +123,58 @@ class _LoadMoreState extends State<LoadMore> {
       }
     });
   }
+}
+
+typedef Future<Null> RefreshCallback();
+
+const double kDisplacement = 40.0;
+
+class RefreshWidget extends StatefulWidget {
+  final RefreshCallback onRefresh;
+
+  final Widget child;
+
+  final PullCallback onLoadMore;
+
+  final double displacement;
+
+  final ScrollHelper scrollHelper;
+
+  RefreshWidget({
+    Key key,
+    @required this.onRefresh,
+    @required this.child,
+    @required this.onLoadMore,
+    this.displacement = kDisplacement,
+    this.scrollHelper,
+  })  : assert(child != null),
+        assert(onRefresh != null),
+        super(key: key);
+
+  @override
+  State<RefreshWidget> createState() => new _RefreshWidgetState();
+}
+
+class _RefreshWidgetState extends State<RefreshWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return new RefreshIndicator(
+      onRefresh: widget.onRefresh,
+      displacement: kDisplacement,
+      child: new LoadMore(
+        scrollNotification: widget.scrollHelper.handle,
+        child: widget.child,
+        isFinish: widget.scrollHelper == null ? false : widget.scrollHelper.isFinish,
+        onLoadMore: widget.onLoadMore,
+      ),
+    );
+  }
+}
+
+abstract class ScrollHelper {
+  bool handle(ScrollNotification notification);
+
+  int itemCount();
+
+  bool isFinish;
 }

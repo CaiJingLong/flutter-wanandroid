@@ -53,34 +53,28 @@ class _HomeListState extends State<HomeList>
       _loadData(0);
       _loadBanner();
     });
-
-//    bindUserInfoChanged(() {
-//      setState(() {});
-//    });
   }
 
   @override
   void dispose() {
     super.dispose();
     _bannerController.dispose();
-//    unbindUserInfoChanged();
   }
 
   @override
   Widget build(BuildContext context) {
     var _ctl = _helper.createController();
-    var content = new RefreshIndicator(
-        child: new LoadMore(
-          onLoadMore: loadMore,
-          scrollNotification: _helper.handle,
-          child: new ListView.builder(
-            physics: const AlwaysScrollableScrollPhysics(),
-            itemBuilder: _buildItem,
-            itemCount: _helper.itemCount() + 1,
-            controller: _ctl,
-          ),
-        ),
-        onRefresh: _refresh);
+    var content = new RefreshWidget(
+      onRefresh: _refresh,
+      onLoadMore: loadMore,
+      scrollHelper: _helper,
+      child: new ListView.builder(
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemBuilder: _buildItem,
+        itemCount: _helper.itemCount() + 1,
+        controller: _ctl,
+      ),
+    );
     return new Builder(builder: (ctx) {
       bindScaffoldContext(ctx);
       return content;
@@ -161,6 +155,9 @@ class _HomeListState extends State<HomeList>
     isLoadMore = false;
     isRefresh = false;
     _helper.page++;
+
+    _helper.isFinish = resp.data.pageCount >= resp.data.curPage;
+
     setState(() {});
   }
 

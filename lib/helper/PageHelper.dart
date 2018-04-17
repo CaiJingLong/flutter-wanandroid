@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_wanandroid/widget/LoadMore.dart';
 
-class PageHelper<Data> {
+class PageHelper<Data> extends ScrollHelper{
   List<Data> datas = new List();
   int page = 0;
   var _init = false;
   var _offset = 0.0;
+
+  bool isFinish = false;
 
   bool handle(ScrollNotification notification) {
     if (notification is ScrollUpdateNotification) {
@@ -30,6 +33,7 @@ class PageHelper<Data> {
 
   void addData(List<Data> datas, {clear = false}) {
     if (clear) {
+      this.datas.clear();
       this.page = 0;
     }
     this.datas.addAll(datas);
