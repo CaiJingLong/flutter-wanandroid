@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_wanandroid/constants/Httpurl.dart';
 import 'package:flutter_wanandroid/helper/HttpHelper.dart';
+import 'package:flutter_wanandroid/helper/NavigatorHelper.dart';
 import 'package:flutter_wanandroid/helper/ScaffoldHelper.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -11,7 +12,7 @@ class RegisterPage extends StatefulWidget {
   _RegisterPageState createState() => new _RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> with ScaffoldHelper, HttpHelper {
+class _RegisterPageState extends State<RegisterPage> with ScaffoldHelper, HttpHelper, NavigatorHelper {
   String user;
 
   String pwd;
@@ -106,8 +107,10 @@ class _RegisterPageState extends State<RegisterPage> with ScaffoldHelper, HttpHe
       "repassword": repwd,
     });
 
-    handle(params).then((_) {
-      Navigator.of(context).pop("注册成功");
+    handleParams(params).then((params) {
+      pop(context, result: "注册成功");
+    }, onError: (err) {
+      showErrorSnackBar(err);
     });
   }
 

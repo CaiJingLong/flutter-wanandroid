@@ -1,10 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_wanandroid/constants/Httpurl.dart';
-import 'package:flutter_wanandroid/helper/HttpHelper.dart';
-import 'package:flutter_wanandroid/helper/ScaffoldHelper.dart';
-import 'package:flutter_wanandroid/helper/UserInfoHelper.dart';
+import 'package:flutter_wanandroid/helper/index.dart';
 import 'package:flutter_wanandroid/pages/login/RegisterPage.dart';
 
 class LoginPage extends StatefulWidget {
@@ -12,7 +11,8 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => new _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin, ScaffoldHelper, HttpHelper {
+class _LoginPageState extends State<LoginPage>
+    with TickerProviderStateMixin, ScaffoldHelper, HttpHelper, NavigatorHelper {
   String user = "";
   String pwd = "";
 
@@ -97,12 +97,16 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin, Sc
       return;
     }
     print("$user $pwd");
-    var params = await requestParams(HttpUrl.login, method: METHOD.POST, params: {"username": user, "password": pwd});
 
-    handle(params).then((params) {
+    var string = await requestString(HttpUrl.login, method: METHOD.POST, params: {"username": user, "password": pwd});
+
+    var map = json.decode(string);
+    handleParams(map).then((params) {
       var data = params["data"];
       UserInfoHelper.setUserInfo(new UserInfo(uid: data["id"].toString(), username: data["username"]));
-      Navigator.pop(context, '登陆成功');
+      pop(context, result: "登陆成功");
+    }, onError: (e) {
+      showErrorSnackBar(e);
     });
   }
 

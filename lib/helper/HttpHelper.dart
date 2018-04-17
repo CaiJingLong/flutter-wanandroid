@@ -10,7 +10,8 @@ final HttpClient _client = new HttpClient();
 enum METHOD { POST, GET, PUT, DELETE }
 
 abstract class HttpHelper {
-  Future<Map<String, dynamic>> requestParams(String path, {METHOD method = METHOD.GET, Map<String, String> params}) async {
+  Future<Map<String, dynamic>> requestParams(String path,
+      {METHOD method = METHOD.GET, Map<String, String> params}) async {
     var string = await requestString(path, method: method, params: params);
     var map = await json.decode(string);
     return map;
@@ -39,9 +40,17 @@ abstract class HttpHelper {
     return json;
   }
 
-  Future<Map<String, dynamic>> handle(Map<String, dynamic> params) async {
-    if (params["errorCode"] == 0) {
+  Future<Map<String, dynamic>> handleParams(Map<String, dynamic> params) async {
+    if (params["errorCode"] == -1) {
       throw new CodeError(params["errorMsg"]);
+    } else {
+      return params;
+    }
+  }
+
+  Future<dynamic> handle(Map<String, dynamic> params) async {
+    if (params["errorCode"] == -1) {
+      return params["errorMsg"];
     } else {
       return params;
     }
