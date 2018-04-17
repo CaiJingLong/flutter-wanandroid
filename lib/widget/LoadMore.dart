@@ -8,11 +8,11 @@ const kLoadMoreOffset = 0.0;
 
 enum _PullIndicatorMode { idle, dragReleaseRefresh, dragReleaseLoadMore, dragReleaseCancel, refreshing, loading }
 
-typedef Future PullCallback();
+typedef Future LoadMoreCallback();
 
 class LoadMore extends StatefulWidget {
   final Widget child;
-  final PullCallback onLoadMore;
+  final LoadMoreCallback onLoadMore;
 
   final double loadMoreOffset;
 
@@ -125,8 +125,6 @@ class _LoadMoreState extends State<LoadMore> {
   }
 }
 
-typedef Future<Null> RefreshCallback();
-
 const double kDisplacement = 40.0;
 
 class RefreshWidget extends StatefulWidget {
@@ -134,7 +132,7 @@ class RefreshWidget extends StatefulWidget {
 
   final Widget child;
 
-  final PullCallback onLoadMore;
+  final LoadMoreCallback onLoadMore;
 
   final double displacement;
 

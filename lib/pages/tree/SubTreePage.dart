@@ -42,12 +42,10 @@ class _SubTreePageState extends State<SubTreePage> with SingleTickerProviderStat
       appBar: new AppBar(
         title: new Text(widget.name),
         bottom: new PreferredSize(
-            child: new Center(
-              child: new TabBar(
-                tabs: _buildTitle(),
-                controller: _ctl,
-                isScrollable: true,
-              ),
+            child: new TabBar(
+              tabs: _buildTitle(),
+              controller: _ctl,
+              isScrollable: true,
             ),
             preferredSize: new Size.fromHeight(40.0)),
       ),
@@ -63,7 +61,13 @@ class _SubTreePageState extends State<SubTreePage> with SingleTickerProviderStat
       list.add(new _SubPage(helper, entity.id));
     }
 
-    return new DefaultTabController(length: widget.subTreeEntity.length, child: new TabBarView(children: list));
+    return new DefaultTabController(
+      length: widget.subTreeEntity.length,
+      child: new TabBarView(
+        children: list,
+        controller: _ctl,
+      ),
+    );
   }
 
   List<Widget> _buildTitle() {

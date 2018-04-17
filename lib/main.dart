@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_wanandroid/index.dart';
-import 'package:flutter_wanandroid/helper/index.dart';
-import 'package:flutter_wanandroid/pages/main/HomePage.dart';
-import 'package:flutter_wanandroid/pages/main/HotPage.dart';
-import 'package:flutter_wanandroid/pages/main/KnowledgePage.dart';
-import 'package:flutter_wanandroid/pages/main/NaviPage.dart';
-import 'package:flutter_wanandroid/pages/main/ProjectPage.dart';
-import 'package:flutter_wanandroid/pages/draw/DrawerPage.dart';
+import 'package:flutter_wanandroid/entity/index.dart';
+import 'package:flutter_wanandroid/helper/PageHelper.dart';
+import 'package:flutter_wanandroid/pages/Index.dart';
 
 void main() => runApp(new MyApp());
 
@@ -19,12 +14,14 @@ class Page {
 }
 
 final PageHelper<TreeEntity> _knowHelper = new PageHelper();
+final PageHelper<NaviData> _naviHelper = new PageHelper();
+final PageHelper<ProjectData> _projectHelper = new PageHelper();
 
 final List<Page> tabs = [
   const Page("首页", const Icon(Icons.home), const HomePage()),
   new Page("知识体系", const Icon(Icons.book), new KnowledgePage(_knowHelper)),
-  const Page("导航", const Icon(Icons.bookmark_border), const NaviPage()),
-  const Page("项目", const Icon(Icons.apps), const ProjectPage()),
+  new Page("网站导航", const Icon(Icons.bookmark_border), new NaviPage(_naviHelper)),
+  new Page("项目", const Icon(Icons.apps), new ProjectPage(_projectHelper)),
 ];
 
 class MyApp extends StatelessWidget {
