@@ -155,7 +155,7 @@ class _HomeListState extends State<HomeList>
     isRefresh = false;
     _helper.page++;
 
-    _helper.isFinish = resp.data.pageCount >= resp.data.curPage;
+    _helper.isFinish = resp.data.datas.isEmpty;
 
     setState(() {});
   }

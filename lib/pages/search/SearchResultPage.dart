@@ -13,7 +13,7 @@ class SearchResultPage extends StatefulWidget {
   _SearchResultPageState createState() => new _SearchResultPageState();
 }
 
-class _SearchResultPageState extends State<SearchResultPage> with NavigatorHelper, HttpHelper {
+class _SearchResultPageState extends State<SearchResultPage> with NavigatorHelper, HttpHelper, HomeItem, UserInfoHelper, LikePage, WebPage {
   List<String> textList = new List<String>();
 
   PageHelper<HomeData> pageHelper = new PageHelper();
@@ -21,8 +21,9 @@ class _SearchResultPageState extends State<SearchResultPage> with NavigatorHelpe
   @override
   void initState() {
     super.initState();
-    var text = widget.searchText.replaceAll("　", " "); //替换全角空格为英文空格
+    var text = widget.searchText.replaceAll("　", " ").trim(); //替换全角空格为英文空格
     textList = text.split(" ");
+    textList.remove(" ");
   }
 
   @override
@@ -82,8 +83,10 @@ class _SearchResultPageState extends State<SearchResultPage> with NavigatorHelpe
   _loadData(int page) async {
     var k = "";
     textList.forEach((text) {
-      text += text;
+      k += text;
     });
+
+    print("k = $k");
 
     var string = await requestString(HttpUrl.search(page), method: METHOD.POST, params: {"k": k});
 
@@ -103,14 +106,15 @@ class _SearchResultPageState extends State<SearchResultPage> with NavigatorHelpe
 
     pageHelper.page++;
 
-    pageHelper.addData(resp.data.datas, clear: resp.data.datas.isEmpty);
+    pageHelper.addData(resp.data.datas, clear: page == 0);
+    pageHelper.isFinish = resp.data.datas.isEmpty;
 
     setState(() {});
   }
 
   Widget _buildListItem(BuildContext context, int index) {
     var data = pageHelper.datas[index];
-    return new Text(data.title);
+    return buildHomeItem(context, data);
   }
 
   Future _refresh() async {

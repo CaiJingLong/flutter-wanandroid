@@ -6,8 +6,8 @@ A new Flutter project. for wanandroid.com
 coding
 
 ## TODO
-1. main
-2. collection
+1. about collection
+2. about search 
 
 ## Getting Started with Flutter
 
