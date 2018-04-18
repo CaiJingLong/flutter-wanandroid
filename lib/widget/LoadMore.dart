@@ -22,8 +22,6 @@ class LoadMore extends StatefulWidget {
 
   final bool isFinish;
 
-  final ScrollHelper scrollHelper;
-
   LoadMore({
     @required this.child,
     this.onLoadMore,
