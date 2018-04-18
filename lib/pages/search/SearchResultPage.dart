@@ -91,7 +91,6 @@ class _SearchResultPageState extends State<SearchResultPage> with NavigatorHelpe
 
     var userMap = json.decode(string);
 
-    // TODO handle error
     handleParams(userMap).catchError((err) {
       print(err);
     });

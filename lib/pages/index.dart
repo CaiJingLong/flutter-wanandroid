@@ -1,4 +1,3 @@
-export 'CollectionPage.dart';
 export 'LikePage.dart';
 export 'WebPage.dart';
 export 'draw/DrawerPage.dart';
@@ -7,3 +6,4 @@ export 'tree/SubTreePage.dart';
 export 'main/index.dart';
 export 'project/index.dart';
 export 'search/index.dart';
+export 'collection/index.dart';

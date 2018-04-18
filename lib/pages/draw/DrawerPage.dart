@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_wanandroid/helper/ScaffoldHelper.dart';
-import 'package:flutter_wanandroid/helper/UserInfoHelper.dart';
+import 'package:flutter_wanandroid/helper/index.dart';
+import 'package:flutter_wanandroid/pages/Index.dart';
 import 'package:flutter_wanandroid/pages/login/LoginPage.dart';
 
 class DrawerPage extends StatefulWidget {
@@ -8,12 +8,25 @@ class DrawerPage extends StatefulWidget {
   _DrawPageState createState() => new _DrawPageState();
 }
 
-class _DrawPageState extends State<DrawerPage> with ScaffoldHelper, UserInfoHelper {
+class _DrawPageState extends State<DrawerPage> with ScaffoldHelper, UserInfoHelper, NavigatorHelper, CookieHelper {
   @override
   void initState() {
     super.initState();
     bindUserInfoChanged(() {
-      setState(() {});
+      _refreshState();
+    });
+    _refreshState();
+  }
+
+  String username = "";
+  var _isLogin = false;
+
+  _refreshState() async {
+    var username = await getUserName();
+    var login = await isLogin();
+    setState(() {
+      this.username = username;
+      this._isLogin = login;
     });
   }
 
@@ -25,37 +38,47 @@ class _DrawPageState extends State<DrawerPage> with ScaffoldHelper, UserInfoHelp
 
   @override
   Widget build(BuildContext context) {
-    var username = getUserName();
+    var subHeader = new InkWell(
+      child: new AspectRatio(
+        aspectRatio: 30 / 15,
+        child: new Material(
+          child: new Column(
+            children: <Widget>[
+              new FlutterLogo(
+                size: 40.0,
+              ),
+              new Center(child: new Text(username)),
+              _buildLoginButton(),
+            ],
+          ),
+        ),
+      ),
+    );
     return new Drawer(
         child: new Scaffold(
       appBar: new AppBar(
         leading: new Text(''),
         title: new Text('菜单'),
       ),
-      body: new Padding(
-        padding: const EdgeInsets.only(top: 10.0),
-        child: new ListView(
-          children: <Widget>[
-            new InkWell(
-              onTap: _checkLogin,
-              child: new AspectRatio(
-                aspectRatio: 30 / 15,
-                child: new Material(
-                  child: new Column(
-                    children: <Widget>[
-                      new FlutterLogo(
-                        size: 40.0,
-                      ),
-                      new Center(child: new Text(username)),
-                      _buildLoginButton(),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+      body: new Builder(builder: (ctx) {
+        bindScaffoldContext(ctx);
+        return new Padding(
+          padding: const EdgeInsets.only(top: 10.0),
+          child: new ListView(
+            children: [
+              subHeader,
+              new InkWell(
+                onTap: () {
+                  if (_isLogin) {
+                    push(context, new CollectionPage());
+                  } else {}
+                },
+                child: new Text('我的收藏'),
+              )
+            ],
+          ),
+        );
+      }),
     ));
   }
 
@@ -67,31 +90,33 @@ class _DrawPageState extends State<DrawerPage> with ScaffoldHelper, UserInfoHelp
         child: new SizedBox(
           child: new InkWell(
             child: new Text(
-              isLogin() ? "登出" : "登录",
+              _isLogin ? "登出" : "登录",
               style: new TextStyle(
                 color: Colors.blue,
                 fontSize: 18.0,
               ),
             ),
-            onTap: _checkLogin,
+            onTap: () {
+              if (!_isLogin) {
+                _goLogin();
+              } else {
+                UserInfoHelper.logout();
+                clearCookies();
+              }
+            },
           ),
         ),
       ),
     );
   }
 
-  _checkLogin() {
-    if (isLogin()) {
-      UserInfoHelper.logout();
-      setState(() {});
-      return;
-    }
+  _goLogin() {
     Navigator.of(context).push(new MaterialPageRoute(builder: (ctx) {
       return new LoginPage();
     })).then((text) {
       if (text is String) {
         showSnackBar(text);
-        setState(() {});
+        _refreshState();
       }
     });
   }

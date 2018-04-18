@@ -2,22 +2,26 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter_wanandroid/helper/ScaffoldHelper.dart';
+import 'package:flutter_wanandroid/helper/index.dart';
 
 const _baseUrl = "www.wanandroid.com";
 final HttpClient _client = new HttpClient();
 
 enum METHOD { POST, GET, PUT, DELETE }
 
+class _CookieHelper extends CookieHelper {}
+
 abstract class HttpHelper {
+  CookieHelper cookieHelper = new _CookieHelper();
+
   Future<Map<String, dynamic>> requestParams(String path,
-      {METHOD method = METHOD.GET, Map<String, String> params}) async {
+      {METHOD method = METHOD.GET, Map<String, String> params, Map<String, String> headers}) async {
     var string = await requestString(path, method: method, params: params);
     var map = await json.decode(string);
     return map;
   }
 
-  Future<String> requestString(String path, {METHOD method = METHOD.GET, Map<String, String> params}) async {
+  Future<String> requestString(String path, {METHOD method = METHOD.GET, Map<String, String> params, Map<String, String> headers}) async {
     HttpClientRequest request;
     var uri = new Uri.http(_baseUrl, path, params);
     switch (method) {
@@ -35,8 +39,15 @@ abstract class HttpHelper {
         break;
     }
 
+    var cookies = request.cookies;
+    var list = await cookieHelper.getCookieList();
+    cookies.addAll(list);
+
     var response = await request.close();
     var json = await response.transform(UTF8.decoder).join();
+
+    await cookieHelper.addCookieList(response.cookies);
+
     return json;
   }
 

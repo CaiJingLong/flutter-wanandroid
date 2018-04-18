@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_wanandroid/constants/Httpurl.dart';
 import 'package:flutter_wanandroid/entity/HomeEntity.dart';
 import 'package:flutter_wanandroid/helper/HttpHelper.dart';
 import 'package:flutter_wanandroid/helper/PageHelper.dart';
@@ -138,10 +139,8 @@ class _HomeListState extends State<HomeList>
   }
 
   void _loadData(int page) async {
-    var uri = new Uri.http("www.wanandroid.com", "article/list/$page/json");
-    var request = await httpClient.getUrl(uri);
-    var response = await request.close();
-    var string = await response.transform(UTF8.decoder).join();
+    var string = await requestString(HttpUrl.getHomeList(page));
+    print(string);
 
     Map userMap = json.decode(string);
     var resp = new HomeEntity.fromJson(userMap);
@@ -181,15 +180,6 @@ class _HomeListState extends State<HomeList>
     _bannerList.clear();
     _bannerList.addAll(resp.data);
     setState(() {});
-  }
-
-  void _like(HomeData data) {
-    if (!isLogin()) {
-      Navigator.of(context).push(new MaterialPageRoute(builder: (ctx) {
-        return new LoginPage();
-      }));
-      return;
-    }
   }
 }
 

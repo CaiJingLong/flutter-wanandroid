@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'CookieHelper.dart';
 
 abstract class UserInfoHelper {
   static UserInfo userInfo;
@@ -34,14 +37,21 @@ abstract class UserInfoHelper {
     return userInfo.uid;
   }
 
-  bool isLogin() {
-    return UserInfoHelper.userInfo != null;
+  var helper = new _CookieHelper();
+
+  Future<bool> isLogin() async {
+    var result = await helper.getSavedNameCookie();
+    return result != null;
   }
 
-  String getUserName() {
-    return isLogin() ? UserInfoHelper.userInfo.username : "未登录";
+  Future<String> getUserName() async {
+    var login = await isLogin();
+    var name = await helper.getSavedNameCookie();
+    return login ? name.value : "未登录";
   }
 }
+
+class _CookieHelper extends CookieHelper {}
 
 class UserInfo {
   String uid;
