@@ -40,12 +40,18 @@ PageHelper _helper = new PageHelper<HomeData>();
 
 List<HomeBannerData> _bannerList = new List();
 
+int _currentPage = 0;
+
 class _HomeListState extends State<HomeList>
     with WebPage, TickerProviderStateMixin, UserInfoHelper, HttpHelper, ScaffoldHelper, HomeItem, LikePage {
   var isRefresh = false;
   var isLoadMore = false;
 
   TabController _bannerController;
+
+  var timeout = const Duration(seconds: 4);
+
+  Timer timer;
 
   @override
   void initState() {
@@ -54,27 +60,49 @@ class _HomeListState extends State<HomeList>
       _loadData(0);
       _loadBanner();
     });
+    createTimer();
+  }
+
+  void createTimer() {
+    timer = new Timer(timeout, _scrollBannerToNext);
   }
 
   @override
   void dispose() {
     super.dispose();
     _bannerController.dispose();
+    timer.cancel();
+  }
+
+  _scrollBannerToNext() {
+    createTimer();
+    if (_bannerList.isEmpty) {
+      return;
+    }
+    var next = _currentPage + 1;
+
+    if (next >= _bannerList.length) {
+      next = 0;
+    }
+
+    _bannerController.animateTo(next);
+    _currentPage = next;
   }
 
   @override
   Widget build(BuildContext context) {
-    var _ctl = _helper.createController();
+    var listView = new ListView.builder(
+      physics: const AlwaysScrollableScrollPhysics(),
+      itemBuilder: _buildItem,
+      itemCount: _helper.itemCount() + 1,
+      controller: _helper.createController(),
+    );
+
     var content = new RefreshWidget(
       onRefresh: _refresh,
       onLoadMore: loadMore,
       scrollHelper: _helper,
-      child: new ListView.builder(
-        physics: const AlwaysScrollableScrollPhysics(),
-        itemBuilder: _buildItem,
-        itemCount: _helper.itemCount() + 1,
-        controller: _ctl,
-      ),
+      child: listView,
     );
     return new Builder(builder: (ctx) {
       bindScaffoldContext(ctx);
@@ -86,7 +114,11 @@ class _HomeListState extends State<HomeList>
     if (_bannerController != null) {
       _bannerController.dispose();
     }
-    _bannerController = new TabController(vsync: this, length: _bannerList.length);
+    _bannerController = new TabController(
+      vsync: this,
+      length: _bannerList.length,
+      initialIndex: _currentPage,
+    );
 
     return new AspectRatio(
       aspectRatio: 3 / 1.7,

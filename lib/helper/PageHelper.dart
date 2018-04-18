@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_wanandroid/widget/LoadMore.dart';
 
-class PageHelper<Data> extends ScrollHelper{
+class PageHelper<Data> extends ScrollHelper {
   List<Data> datas = new List();
   int page = 0;
   var _init = false;
@@ -14,6 +14,11 @@ class PageHelper<Data> extends ScrollHelper{
       _offset = notification.metrics.extentBefore;
     }
     return false;
+  }
+
+  @override
+  bool isHandle(child) {
+    return child is ListView;
   }
 
   ScrollController createController() {

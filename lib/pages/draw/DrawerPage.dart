@@ -67,19 +67,38 @@ class _DrawPageState extends State<DrawerPage> with ScaffoldHelper, UserInfoHelp
           child: new ListView(
             children: [
               subHeader,
-              new InkWell(
-                onTap: () {
-                  if (_isLogin) {
-                    push(context, new CollectionPage());
-                  } else {}
-                },
-                child: new Text('我的收藏'),
-              )
+              new Divider(),
+              createItem('我的收藏', () {
+                if (_isLogin) {
+                  push(context, new CollectionPage());
+                } else {}
+              }),
+              new Divider(),
+              createItem('关于项目', () {
+                //TODO about project
+              }),
+              new Divider(),
             ],
           ),
         );
       }),
     ));
+  }
+
+  Widget createItem(String text, Function onTap) {
+    return new InkWell(
+      onTap: onTap,
+      child: new Align(
+        child: new Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: new Text(
+            text,
+            style: new TextStyle(fontSize: 16.0),
+          ),
+        ),
+        alignment: Alignment.center,
+      ),
+    );
   }
 
   Widget _buildLoginButton() {

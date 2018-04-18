@@ -22,6 +22,8 @@ class LoadMore extends StatefulWidget {
 
   final bool isFinish;
 
+  final ScrollHelper scrollHelper;
+
   LoadMore({
     @required this.child,
     this.onLoadMore,
@@ -52,7 +54,7 @@ class _LoadMoreState extends State<LoadMore> {
   }
 
   bool _handleScrollNotification(ScrollNotification notification) {
-    if (widget.scrollNotification != null) {
+    if (widget.scrollNotification != null && notification.depth == 0) {
       widget.scrollNotification(notification);
     }
 
@@ -170,6 +172,8 @@ class _RefreshWidgetState extends State<RefreshWidget> {
 }
 
 abstract class ScrollHelper {
+  bool isHandle(child);
+
   bool handle(ScrollNotification notification);
 
   int itemCount();
