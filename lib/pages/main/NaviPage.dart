@@ -73,7 +73,11 @@ class _NaviPageState extends State<_NaviPage> with HttpHelper, WebPage {
               spacing: 8.0,
             ),
           ),
-        )
+        ),
+        new Divider(
+          height: 1.0,
+          color: Colors.grey,
+        ),
       ],
     );
   }

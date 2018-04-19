@@ -57,35 +57,43 @@ class _KnowledgePageState extends State<KnowledgePage> with HttpHelper {
           return new SubTreePage(data.name, data.children);
         }));
       },
-      child: new Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: new Row(
-          children: <Widget>[
-            new Expanded(
-                child: new Column(
+      child: new Column(
+        children: <Widget>[
+          new Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: new Row(
               children: <Widget>[
-                new Align(
-                  child: new Padding(
-                    padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-                    child: new Text(
-                      data.name,
-                      style: new TextStyle(fontSize: 16.0),
+                new Expanded(
+                    child: new Column(
+                  children: <Widget>[
+                    new Align(
+                      child: new Padding(
+                        padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                        child: new Text(
+                          data.name,
+                          style: new TextStyle(fontSize: 16.0),
+                        ),
+                      ),
+                      alignment: Alignment.topLeft,
                     ),
-                  ),
-                  alignment: Alignment.topLeft,
+                    new Align(
+                      child: _buildWrap(data.children),
+                      alignment: Alignment.topLeft,
+                    )
+                  ],
+                )),
+                new Icon(
+                  Icons.keyboard_arrow_right,
+                  color: Colors.blue,
                 ),
-                new Align(
-                  child: _buildWrap(data.children),
-                  alignment: Alignment.topLeft,
-                )
               ],
-            )),
-            new Icon(
-              Icons.keyboard_arrow_right,
-              color: Colors.blue,
             ),
-          ],
-        ),
+          ),
+          new Divider(
+            height: 2.0,
+            color: Colors.grey,
+          )
+        ],
       ),
     );
   }
