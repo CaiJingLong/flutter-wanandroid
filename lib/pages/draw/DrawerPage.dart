@@ -8,7 +8,11 @@ class DrawerPage extends StatefulWidget {
   _DrawPageState createState() => new _DrawPageState();
 }
 
-class _DrawPageState extends State<DrawerPage> with ScaffoldHelper, UserInfoHelper, NavigatorHelper, CookieHelper {
+class _DrawPageState extends State<DrawerPage>
+    with ScaffoldHelper, UserInfoHelper, NavigatorHelper, CookieHelper, TickerProviderStateMixin {
+  AnimationController controller;
+  CurvedAnimation curve;
+
   @override
   void initState() {
     super.initState();
@@ -16,6 +20,9 @@ class _DrawPageState extends State<DrawerPage> with ScaffoldHelper, UserInfoHelp
       _refreshState();
     });
     _refreshState();
+
+    controller = new AnimationController(duration: const Duration(milliseconds: 2000), vsync: this);
+    curve = new CurvedAnimation(parent: controller, curve: Curves.easeIn);
   }
 
   String username = "";
@@ -38,18 +45,22 @@ class _DrawPageState extends State<DrawerPage> with ScaffoldHelper, UserInfoHelp
 
   @override
   Widget build(BuildContext context) {
-    var subHeader = new InkWell(
-      child: new AspectRatio(
-        aspectRatio: 30 / 15,
-        child: new Material(
-          child: new Column(
-            children: <Widget>[
-              new FlutterLogo(
-                size: 40.0,
-              ),
-              new Center(child: new Text(username)),
-              _buildLoginButton(),
-            ],
+    controller.forward();
+    var subHeader = new FadeTransition(
+      opacity: curve,
+      child: new InkWell(
+        child: new AspectRatio(
+          aspectRatio: 30 / 15,
+          child: new Material(
+            child: new Column(
+              children: <Widget>[
+                new FlutterLogo(
+                  size: 40.0,
+                ),
+                new Center(child: new Text(username)),
+                _buildLoginButton(),
+              ],
+            ),
           ),
         ),
       ),
@@ -71,7 +82,9 @@ class _DrawPageState extends State<DrawerPage> with ScaffoldHelper, UserInfoHelp
               createItem('我的收藏', () {
                 if (_isLogin) {
                   push(context, new CollectionPage());
-                } else {}
+                } else {
+                  _goLogin();
+                }
               }),
               new Divider(),
               createItem('关于项目', () {
