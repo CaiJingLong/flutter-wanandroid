@@ -48,7 +48,7 @@ class _CollectionPageState extends State<CollectionPage> with HttpHelper {
     return new Text(data.title);
   }
 
-  void _loadData(int page) async {
+  Future _loadData(int page) async {
     var string = await requestString(HttpUrl.myCollectionList(page));
     var userMap = json.decode(string);
     var resp = new HomeEntity.fromJson(userMap);
@@ -68,6 +68,6 @@ class _CollectionPageState extends State<CollectionPage> with HttpHelper {
   }
 
   Future _loadMore() async {
-    _loadData(_pageHelper.page);
+    await _loadData(_pageHelper.page);
   }
 }

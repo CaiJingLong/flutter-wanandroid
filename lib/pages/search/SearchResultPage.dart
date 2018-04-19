@@ -24,6 +24,8 @@ class _SearchResultPageState extends State<SearchResultPage> with NavigatorHelpe
     var text = widget.searchText.replaceAll("　", " ").trim(); //替换全角空格为英文空格
     textList = text.split(" ");
     textList.remove(" ");
+
+    _refresh();
   }
 
   @override
@@ -44,8 +46,8 @@ class _SearchResultPageState extends State<SearchResultPage> with NavigatorHelpe
           ),
           new Expanded(
             child: new RefreshWidget(
-              onLoadMore: _refresh,
-              onRefresh: _loadMore,
+              onLoadMore: _loadMore,
+              onRefresh: _refresh,
               scrollHelper: pageHelper,
               child: new ListView.builder(
                 itemBuilder: _buildListItem,
@@ -80,17 +82,16 @@ class _SearchResultPageState extends State<SearchResultPage> with NavigatorHelpe
     );
   }
 
-  _loadData(int page) async {
+  Future _loadData(int page) async {
     var k = "";
     textList.forEach((text) {
       k += text;
+      k += " ";
     });
 
-    print("k = $k");
+//    print("k = $k");
 
     var string = await requestString(HttpUrl.search(page), method: METHOD.POST, params: {"k": k});
-
-    print(string);
 
     var userMap = json.decode(string);
 
@@ -104,10 +105,7 @@ class _SearchResultPageState extends State<SearchResultPage> with NavigatorHelpe
       pageHelper.page = 0;
     }
 
-    pageHelper.page++;
-
     pageHelper.addData(resp.data.datas, clear: page == 0);
-    pageHelper.isFinish = resp.data.datas.isEmpty;
 
     setState(() {});
   }
@@ -117,11 +115,11 @@ class _SearchResultPageState extends State<SearchResultPage> with NavigatorHelpe
     return buildHomeItem(context, data);
   }
 
-  Future _refresh() async {
+  Future<Null> _refresh() async {
     _loadData(0);
   }
 
-  Future<Null> _loadMore() async {
-    _loadData(pageHelper.page);
+  Future _loadMore() async {
+    await _loadData(pageHelper.page);
   }
 }

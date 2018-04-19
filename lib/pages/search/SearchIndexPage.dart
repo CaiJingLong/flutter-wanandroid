@@ -18,6 +18,7 @@ class _SearchIndexPageState extends State<SearchIndexPage> with NavigatorHelper,
           decoration: new InputDecoration(hintText: '多个关键字以空格分开'),
           onChanged: _onInputChanged,
           onSubmitted: _onSubmit,
+          autocorrect: false,
         ),
         actions: <Widget>[
           new Builder(

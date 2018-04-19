@@ -40,6 +40,8 @@ class _LoadMoreState extends State<LoadMore> {
 
   _PullIndicatorMode _mode;
 
+  var isLoading = false;
+
   @override
   Widget build(BuildContext context) {
 //    if(widget.child is ListView && enableLoadMore){
@@ -89,9 +91,11 @@ class _LoadMoreState extends State<LoadMore> {
 
   void _handleLoadMore() {
     if (!widget.enableLoadMore || widget.isFinish) {
+      print("return is state");
       return;
     }
-    if (widget.onLoadMore != null) {
+    if (widget.onLoadMore != null && !isLoading) {
+      print("_handle loadMore");
       handleResult(widget.onLoadMore());
     }
   }
@@ -102,7 +106,8 @@ class _LoadMoreState extends State<LoadMore> {
     });
   }
 
-  void handleResult(Future result) {
+  Future handleResult(Future result) async{
+    print("handleResult");
     assert(() {
       if (result == null)
         FlutterError.reportError(new FlutterErrorDetails(
@@ -114,14 +119,21 @@ class _LoadMoreState extends State<LoadMore> {
       return true;
     }());
     if (result == null) return;
-    result.whenComplete(() {
-      if (mounted && _mode == _PullIndicatorMode.refreshing) {
-        changeMode(_PullIndicatorMode.idle);
-      }
-      if (mounted && _mode == _PullIndicatorMode.loading) {
-        changeMode(_PullIndicatorMode.idle);
-      }
-    });
+    isLoading = true;
+
+    await result;
+    isLoading = false;
+    if (mounted && _mode == _PullIndicatorMode.refreshing) {
+      changeMode(_PullIndicatorMode.idle);
+    }
+    if (mounted && _mode == _PullIndicatorMode.loading) {
+      changeMode(_PullIndicatorMode.idle);
+    }
+
+//
+//    result.whenComplete(() {
+//
+//    });
   }
 }
 

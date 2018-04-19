@@ -80,7 +80,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage> with HttpHelper, 
     );
   }
 
-  void _loadData(int page) async {
+  Future _loadData(int page) async {
     var string = await requestString(HttpUrl.subProject(page), params: {"cid": widget.cid.toString()});
 
     var userMap = json.decode(string);
@@ -98,7 +98,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage> with HttpHelper, 
   }
 
   Future _loadMore() async {
-    _loadData(_helper.page);
+    await _loadData(_helper.page);
   }
 }
 

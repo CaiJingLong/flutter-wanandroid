@@ -42,10 +42,13 @@ class _SubTreePageState extends State<SubTreePage> with SingleTickerProviderStat
       appBar: new AppBar(
         title: new Text(widget.name),
         bottom: new PreferredSize(
-            child: new TabBar(
-              tabs: _buildTitle(),
-              controller: _ctl,
-              isScrollable: true,
+            child: new Align(
+              alignment: Alignment.centerLeft,
+              child: new TabBar(
+                tabs: _buildTitle(),
+                controller: _ctl,
+                isScrollable: true,
+              ),
             ),
             preferredSize: new Size.fromHeight(40.0)),
       ),
@@ -83,6 +86,30 @@ class _SubTreePageState extends State<SubTreePage> with SingleTickerProviderStat
   }
 }
 
+class SingleTreePage extends StatefulWidget {
+  final int cid;
+  final String name;
+
+  SingleTreePage(this.cid, this.name);
+
+  @override
+  _SingleTreePageState createState() => new _SingleTreePageState();
+}
+
+class _SingleTreePageState extends State<SingleTreePage> {
+  final PageHelper<HomeData> pageHelper = new PageHelper();
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text(widget.name),
+      ),
+      body: new _SubPage(pageHelper, widget.cid),
+    );
+  }
+}
+
 class _SubPage extends StatefulWidget {
   final PageHelper<HomeData> pageHelper;
   final int cid;
@@ -93,7 +120,7 @@ class _SubPage extends StatefulWidget {
   __SubPageState createState() => new __SubPageState();
 }
 
-class __SubPageState extends State<_SubPage> with WebPage, LikePage, HomeItem, HttpHelper, UserInfoHelper {
+class __SubPageState extends State<_SubPage> with WebPage, LikePage, HomeItem, HttpHelper, UserInfoHelper, NavigatorHelper {
   @override
   void initState() {
     super.initState();
@@ -121,14 +148,11 @@ class __SubPageState extends State<_SubPage> with WebPage, LikePage, HomeItem, H
     return buildHomeItem(context, widget.pageHelper.datas[index]);
   }
 
-  void _loadData(int page) async {
+  Future _loadData(int page) async {
     var string = await requestString(HttpUrl.subTreeList(page), params: {"cid": widget.cid.toString()});
     Map userMap = json.decode(string);
     var resp = new HomeEntity.fromJson(userMap);
     widget.pageHelper.addData(resp.data.datas, clear: page == 0);
-    if (resp.data.datas.isEmpty) {
-      widget.pageHelper.isFinish = true;
-    }
     setState(() {});
   }
 
@@ -137,6 +161,6 @@ class __SubPageState extends State<_SubPage> with WebPage, LikePage, HomeItem, H
   }
 
   Future _loadMore() async {
-    _loadData(widget.pageHelper.page);
+    await _loadData(widget.pageHelper.page);
   }
 }
