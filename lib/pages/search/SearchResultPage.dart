@@ -105,6 +105,8 @@ class _SearchResultPageState extends State<SearchResultPage> with NavigatorHelpe
       pageHelper.page = 0;
     }
 
+    Colors.blue
+
     pageHelper.addData(resp.data.datas, clear: page == 0);
 
     setState(() {});
