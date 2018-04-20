@@ -7,3 +7,4 @@ export 'main/index.dart';
 export 'project/index.dart';
 export 'search/index.dart';
 export 'collection/index.dart';
+export 'AboutDialog.dart';

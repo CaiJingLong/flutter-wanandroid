@@ -12,4 +12,7 @@ abstract class NavigatorHelper {
   pop(BuildContext context, {result}) {
     Navigator.of(context).pop(result);
   }
+
+  showDialog(BuildContext ctx,Widget widget){
+  }
 }

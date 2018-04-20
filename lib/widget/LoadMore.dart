@@ -54,6 +54,10 @@ class _LoadMoreState extends State<LoadMore> {
   }
 
   bool _handleScrollNotification(ScrollNotification notification) {
+    if( notification.depth != 0){
+      return false;
+    }
+
     if (widget.scrollNotification != null && notification.depth == 0) {
       widget.scrollNotification(notification);
     }

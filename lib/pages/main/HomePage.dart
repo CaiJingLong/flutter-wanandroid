@@ -80,7 +80,14 @@ class _HomeListState extends State<HomeList>
     if (_bannerList.isEmpty) {
       return;
     }
-    var next = _currentPage + 1;
+
+    var current = _currentPage;
+
+    if (_bannerController != null) {
+      current = _bannerController.index;
+    }
+
+    var next = current + 1;
 
     if (next >= _bannerList.length) {
       next = 0;

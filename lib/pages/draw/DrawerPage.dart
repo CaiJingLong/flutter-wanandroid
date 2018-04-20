@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_wanandroid/helper/index.dart';
 import 'package:flutter_wanandroid/pages/Index.dart';
+import 'package:flutter_wanandroid/pages/index.dart';
 import 'package:flutter_wanandroid/pages/login/LoginPage.dart';
 
 class DrawerPage extends StatefulWidget {
@@ -68,8 +70,10 @@ class _DrawPageState extends State<DrawerPage>
     return new Drawer(
         child: new Scaffold(
       appBar: new AppBar(
-        leading: new Text(''),
-        title: new Text('菜单'),
+        title: new Title(
+          child: new Text('菜单'),
+          color: Colors.white,
+        ),
       ),
       body: new Builder(builder: (ctx) {
         bindScaffoldContext(ctx);
@@ -88,7 +92,16 @@ class _DrawPageState extends State<DrawerPage>
               }),
               new Divider(),
               createItem('关于项目', () {
-                //TODO about project
+                var dialog = createAboutDialog();
+                showDialog(
+                    context: ctx,
+                    builder: (ctx) {
+                      return dialog;
+                    });
+              }),
+              new Divider(),
+              createItem('about flutter', () {
+                showAboutDialog(context: ctx);
               }),
               new Divider(),
             ],
