@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_wanandroid/helper/index.dart';
+import 'package:flutter_wanandroid/other/HeroAnimation.dart';
 import 'package:flutter_wanandroid/other/LogoApp.dart';
 import 'package:flutter_wanandroid/pages/Index.dart';
 import 'package:flutter_wanandroid/pages/index.dart';
@@ -108,11 +109,16 @@ class _DrawPageState extends State<DrawerPage>
               createItem('about flutter', () {
                 showAboutDialog(context: ctx);
               }),
-              new Divider(),
-              createItem('实验性', () {
-                push(context, new LogoApp());
-              }),
-              new Divider(),
+//              new Divider(),
+//              createItem('实验性', () {
+//                push(context, new LogoApp());
+//              }),
+//              new Divider(),
+//              new Divider(),
+//              createItem('实验性2', () {
+//                push(context, new RadialExpansionDemo());
+//              }),
+//              new Divider(),
             ],
           ),
         );
