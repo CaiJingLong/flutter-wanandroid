@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_wanandroid/helper/index.dart';
+import 'package:flutter_wanandroid/other/LogoApp.dart';
 import 'package:flutter_wanandroid/pages/Index.dart';
 import 'package:flutter_wanandroid/pages/index.dart';
 import 'package:flutter_wanandroid/pages/login/LoginPage.dart';
@@ -25,6 +26,8 @@ class _DrawPageState extends State<DrawerPage>
 
     controller = new AnimationController(duration: const Duration(milliseconds: 2000), vsync: this);
     curve = new CurvedAnimation(parent: controller, curve: Curves.easeIn);
+
+    controller.forward();
   }
 
   String username = "";
@@ -41,13 +44,15 @@ class _DrawPageState extends State<DrawerPage>
 
   @override
   void dispose() {
+    controller.dispose();
+    controller = null;
+    curve = null;
     super.dispose();
     unbindUserInfoChanged();
   }
 
   @override
   Widget build(BuildContext context) {
-    controller.forward();
     var subHeader = new FadeTransition(
       opacity: curve,
       child: new InkWell(
@@ -102,6 +107,10 @@ class _DrawPageState extends State<DrawerPage>
               new Divider(),
               createItem('about flutter', () {
                 showAboutDialog(context: ctx);
+              }),
+              new Divider(),
+              createItem('实验性', () {
+                push(context, new LogoApp());
               }),
               new Divider(),
             ],

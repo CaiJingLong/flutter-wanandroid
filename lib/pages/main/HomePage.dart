@@ -44,7 +44,15 @@ List<HomeBannerData> _bannerList = new List();
 int _currentPage = 0;
 
 class _HomeListState extends State<HomeList>
-    with WebPage, TickerProviderStateMixin, UserInfoHelper, HttpHelper, ScaffoldHelper, HomeItem, LikePage, NavigatorHelper {
+    with
+        WebPage,
+        TickerProviderStateMixin,
+        UserInfoHelper,
+        HttpHelper,
+        ScaffoldHelper,
+        HomeItem,
+        LikePage,
+        NavigatorHelper {
   var isRefresh = false;
   var isLoadMore = false;
 
@@ -93,7 +101,11 @@ class _HomeListState extends State<HomeList>
       next = 0;
     }
 
-    _bannerController.animateTo(next);
+    if (next == _bannerList.length - 1) {
+      _bannerController.index = next;
+    } else {
+      _bannerController.animateTo(next);
+    }
     _currentPage = next;
   }
 
