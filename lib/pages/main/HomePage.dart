@@ -14,6 +14,7 @@ import 'package:flutter_wanandroid/pages/Index.dart';
 import 'package:flutter_wanandroid/pages/LikePage.dart';
 import 'package:flutter_wanandroid/pages/WebPage.dart';
 import 'package:flutter_wanandroid/widget/LoadMore.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 var httpClient = new HttpClient();
 
@@ -236,6 +237,10 @@ class _HomeListState extends State<HomeList>
 }
 
 abstract class HomeItem extends WebPage with LikePage, NavigatorHelper {
+  launchURL(url) {
+    launch(url);
+  }
+
   InkWell buildHomeItem(BuildContext context, HomeData data, {bool showDivider = true}) {
     var time = new DateTime.fromMillisecondsSinceEpoch(data.publishTime);
     var date = "${time.year}-${time.month}-${time.day}";
@@ -243,6 +248,7 @@ abstract class HomeItem extends WebPage with LikePage, NavigatorHelper {
     return new InkWell(
       onTap: () {
         startUrl(data.link);
+//        launchURL(data.link);
       },
       child: new Padding(
         padding: const EdgeInsets.all(8.0),
