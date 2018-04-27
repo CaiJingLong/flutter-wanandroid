@@ -84,6 +84,7 @@ class _CollectionPageState extends State<CollectionPage> with HttpHelper, WebPag
         ),
         new Row(
           children: <Widget>[
+            // todo 修改此处注释部分代码,以防止崩溃的发生
 //            new Expanded(
 //              child: new Align(
 //                child: new InkWell(
