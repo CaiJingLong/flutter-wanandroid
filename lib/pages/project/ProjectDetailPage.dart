@@ -153,7 +153,7 @@ class __DetailPageState extends State<_DetailPage> with WebPage {
           new FlatButton(
             child: new Text(data.link),
             onPressed: () {
-              startUrl(data.link);
+              startUrl(data.link, context: context, title: data.title);
             },
           ),
           new Padding(
@@ -167,7 +167,7 @@ class __DetailPageState extends State<_DetailPage> with WebPage {
             child: new FlatButton(
               child: new Text(data.projectLink),
               onPressed: () {
-                startUrl(data.projectLink);
+                startUrl(data.projectLink, context: context, title: data.title);
               },
             ),
           ),

@@ -45,15 +45,7 @@ List<HomeBannerData> _bannerList = new List();
 int _currentPage = 0;
 
 class _HomeListState extends State<HomeList>
-    with
-        WebPage,
-        TickerProviderStateMixin,
-        UserInfoHelper,
-        HttpHelper,
-        ScaffoldHelper,
-        HomeItem,
-        LikePage,
-        NavigatorHelper {
+    with WebPage, TickerProviderStateMixin, UserInfoHelper, HttpHelper, ScaffoldHelper, HomeItem, LikePage, NavigatorHelper {
   var isRefresh = false;
   var isLoadMore = false;
 
@@ -177,7 +169,7 @@ class _HomeListState extends State<HomeList>
         ),
       ]),
       onTap: () {
-        startUrl(data.url);
+        startUrl(data.url, context: context, title: data.title);
       },
     );
   }
@@ -247,7 +239,7 @@ abstract class HomeItem extends WebPage with LikePage, NavigatorHelper {
 
     return new InkWell(
       onTap: () {
-        startUrl(data.link);
+        startUrl(data.link, context: context, title: data.title);
 //        launchURL(data.link);
       },
       child: new Padding(

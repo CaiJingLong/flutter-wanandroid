@@ -90,7 +90,7 @@ class _HotPageState extends State<HotPage> with HttpHelper, WebPage {
 
   List<Widget> _buildCommonWebList() {
     return _buildList(frientLinks, (LinkEntity data) {
-      startUrl(data.link);
+      startUrl(data.link, context: context, title: data.name);
     });
   }
 

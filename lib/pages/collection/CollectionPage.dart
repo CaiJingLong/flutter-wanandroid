@@ -9,7 +9,7 @@ class CollectionPage extends StatefulWidget {
   _CollectionPageState createState() => new _CollectionPageState();
 }
 
-class _CollectionPageState extends State<CollectionPage> with HttpHelper {
+class _CollectionPageState extends State<CollectionPage> with HttpHelper, WebPage, NavigatorHelper, LikePage, UserInfoHelper {
   PageHelper<HomeData> _pageHelper = new PageHelper();
 
   List<HomeData> _datas;
@@ -43,9 +43,83 @@ class _CollectionPageState extends State<CollectionPage> with HttpHelper {
     );
   }
 
+  Widget buildHomeItem(BuildContext context, HomeData data, {bool showDivider = true}) {
+    var time = new DateTime.fromMillisecondsSinceEpoch(data.publishTime);
+    var date = "${time.year}-${time.month}-${time.day}";
+
+    return new InkWell(
+      onTap: () {
+        startUrl(data.link, context: context, title: data.title);
+//        launchURL(data.link);
+      },
+      child: new SizedBox(height: 74.0, child: buildColumn(data, date, context)),
+    );
+  }
+
+  Widget buildColumn(HomeData data, String date, BuildContext context) {
+    return new Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new Text(
+                data.title.trim(),
+                maxLines: 1,
+                style: new TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
+              ),
+            ),
+            new Padding(
+              padding: const EdgeInsets.only(left: 3.0),
+              child: new Text(date),
+            ),
+          ],
+        ),
+        new Padding(
+          padding: const EdgeInsets.only(top: 3.0),
+          child: new Text(
+            "作者: ${data.author}",
+            style: new TextStyle(fontSize: 14.0),
+          ),
+        ),
+        new Row(
+          children: <Widget>[
+//            new Expanded(
+//              child: new Align(
+//                child: new InkWell(
+//                  child: new Text(
+//                    data.chapterName,
+//                    style: new TextStyle(fontSize: 14.0, color: Colors.blue),
+//                  ),
+//                  onTap: () {
+//                    push(context, new SingleTreePage(data.chapterId, data.chapterName));
+//                  },
+//                ),
+//                alignment: Alignment.centerLeft,
+//              ),
+//            ),
+//            new InkWell(
+//              onTap: () {
+//                like(context, data);
+//              },
+//              child: new Icon(data.collect ? Icons.star : Icons.star_border),
+//            )
+          ],
+        ),
+        new Expanded(
+          child: new Align(
+            alignment: Alignment.bottomCenter,
+            child: new Divider(
+              height: 1.0,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildItem(BuildContext context, int index) {
-    var data = _datas[index];
-    return new Text(data.title);
+    return buildHomeItem(context, _datas[index]);
   }
 
   Future _loadData(int page) async {

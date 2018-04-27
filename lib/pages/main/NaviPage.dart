@@ -96,7 +96,7 @@ class _NaviPageState extends State<_NaviPage> with HttpHelper, WebPage {
     return articles.map((data) {
       return new InkWell(
         onTap: () {
-          startUrl(data.link);
+          startUrl(data.link, context: context, title: data.title);
         },
         child: new Chip(
           label: new Text(data.title),
