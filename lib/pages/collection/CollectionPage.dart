@@ -9,7 +9,8 @@ class CollectionPage extends StatefulWidget {
   _CollectionPageState createState() => new _CollectionPageState();
 }
 
-class _CollectionPageState extends State<CollectionPage> with HttpHelper, WebPage, NavigatorHelper, LikePage, UserInfoHelper {
+class _CollectionPageState extends State<CollectionPage>
+    with HttpHelper, WebPage, NavigatorHelper, LikePage, UserInfoHelper, CollectionDelegate {
   PageHelper<HomeData> _pageHelper = new PageHelper();
 
   List<HomeData> _datas;
@@ -52,8 +53,39 @@ class _CollectionPageState extends State<CollectionPage> with HttpHelper, WebPag
         startUrl(data.link, context: context, title: data.title);
 //        launchURL(data.link);
       },
+      onLongPress: () {
+        var dialog = showDialog(
+          context: context,
+          builder: (ctx) {
+            return new AlertDialog(
+              title: new Text('取消收藏?'),
+              actions: <Widget>[
+                new RaisedButton(
+                  onPressed: () {},
+                  child: new Text('取消'),
+                ),
+                new RaisedButton(
+                  onPressed: () {
+                    cancelCollection(data);
+                  },
+                  child: new Text('确定'),
+                ),
+              ],
+            );
+          },
+        );
+      },
       child: new SizedBox(height: 74.0, child: buildColumn(data, date, context)),
     );
+  }
+
+  void cancelCollection(HomeData data) async {
+    var result = await cancelCollectionWithCollectionList(data.id, originId: data.originId);
+    if (result) {
+      setState(() {
+        _datas.remove(data);
+      });
+    }
   }
 
   Widget buildColumn(HomeData data, String date, BuildContext context) {
@@ -85,26 +117,20 @@ class _CollectionPageState extends State<CollectionPage> with HttpHelper, WebPag
         new Row(
           children: <Widget>[
             // todo 修改此处注释部分代码,以防止崩溃的发生
-//            new Expanded(
-//              child: new Align(
-//                child: new InkWell(
-//                  child: new Text(
-//                    data.chapterName,
-//                    style: new TextStyle(fontSize: 14.0, color: Colors.blue),
-//                  ),
-//                  onTap: () {
-//                    push(context, new SingleTreePage(data.chapterId, data.chapterName));
-//                  },
-//                ),
-//                alignment: Alignment.centerLeft,
-//              ),
-//            ),
-//            new InkWell(
-//              onTap: () {
-//                like(context, data);
-//              },
-//              child: new Icon(data.collect ? Icons.star : Icons.star_border),
-//            )
+            new Expanded(
+              child: new Align(
+                child: new InkWell(
+                  child: new Text(
+                    data.chapterName,
+                    style: new TextStyle(fontSize: 14.0, color: Colors.blue),
+                  ),
+                  onTap: () {
+                    push(context, new SingleTreePage(data.chapterId, data.chapterName));
+                  },
+                ),
+                alignment: Alignment.centerLeft,
+              ),
+            ),
           ],
         ),
         new Expanded(

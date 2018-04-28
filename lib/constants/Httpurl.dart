@@ -56,14 +56,14 @@ class HttpUrl {
   /// 收藏站内
   /// id
   /// post
-  static String collectionIn(int id) {
+  static String collectionInside(int id) {
     return "lg/collect/$id/json";
   }
 
   /// 收藏站外文章
   /// title，author，link
   /// post
-  static String collectionOut = "lg/collect/add/json";
+  static String collectionOutside = "lg/collect/add/json";
 
   /// 取消收藏
   /// 文章列表

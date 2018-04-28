@@ -45,8 +45,5 @@ class PageHelper<Data> extends ScrollHelper {
     this.page++;
 
     isFinish = datas.isEmpty;
-//    isFinish = datas.isEmpty;
-
-    print("---- addData  page = ${this.page}---");
   }
 }

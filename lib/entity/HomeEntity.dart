@@ -36,10 +36,18 @@ class HomeData extends Object with _$HomeDataSerializerMixin {
   bool collect;
   int publishTime;
   int chapterId;
+  int originId;
 
   HomeData(this.link, this.author, this.id, this.title, this.fresh, this.chapterName, this.collect, this.publishTime,this.chapterId);
 
   factory HomeData.fromJson(Map<String, dynamic> json) => _$HomeDataFromJson(json);
+
+  @override
+  String toString() {
+    return 'HomeData{link: $link, author: $author, id: $id, title: $title, fresh: $fresh, chapterName: $chapterName, collect: $collect, publishTime: $publishTime, chapterId: $chapterId, originId: $originId}';
+  }
+
+
 }
 
 @JsonSerializable()
