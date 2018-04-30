@@ -91,8 +91,6 @@ class _SearchResultPageState extends State<SearchResultPage> with NavigatorHelpe
 
     var string = await requestString(HttpUrl.search(page), method: METHOD.POST, params: {"k": k});
 
-    string = string.replaceAll("<em class='highlight'>", "").replaceAll("</em>", "");
-
     var userMap = json.decode(string);
 
     handleParams(userMap).catchError((err) {

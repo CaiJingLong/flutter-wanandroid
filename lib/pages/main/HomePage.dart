@@ -15,6 +15,7 @@ import 'package:flutter_wanandroid/pages/LikePage.dart';
 import 'package:flutter_wanandroid/pages/WebPage.dart';
 import 'package:flutter_wanandroid/widget/LoadMore.dart';
 import 'package:url_launcher/url_launcher.dart';
+//import 'package:html/dom.dart';
 
 var httpClient = new HttpClient();
 
@@ -185,7 +186,6 @@ class _HomeListState extends State<HomeList>
 
   Future _loadData(int page) async {
     var string = await requestString(HttpUrl.getHomeList(page));
-    print(string);
 
     Map userMap = json.decode(string);
     var resp = new HomeEntity.fromJson(userMap);

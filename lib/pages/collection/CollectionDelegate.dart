@@ -28,7 +28,7 @@ abstract class CollectionDelegate extends Object with HttpHelper {
   }
 
   Future<bool> cancelCollectionWithCollectionList(int id, {int originId = -1}) async {
-    var params = await requestParams(HttpUrl.cancelCollectionId(id),
+    var params = await requestParams(HttpUrl.cancelCollectionIdCollectPage(id),
         method: METHOD.POST, params: {"id": id.toString(), "originId": originId.toString()});
     _handlerParams(params);
     return true;

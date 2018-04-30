@@ -54,19 +54,22 @@ class _CollectionPageState extends State<CollectionPage>
 //        launchURL(data.link);
       },
       onLongPress: () {
-        var dialog = showDialog(
+        showDialog(
           context: context,
           builder: (ctx) {
             return new AlertDialog(
               title: new Text('取消收藏?'),
               actions: <Widget>[
                 new RaisedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pop(ctx);
+                  },
                   child: new Text('取消'),
                 ),
                 new RaisedButton(
                   onPressed: () {
                     cancelCollection(data);
+                    Navigator.pop(ctx);
                   },
                   child: new Text('确定'),
                 ),
@@ -116,7 +119,6 @@ class _CollectionPageState extends State<CollectionPage>
         ),
         new Row(
           children: <Widget>[
-            // todo 修改此处注释部分代码,以防止崩溃的发生
             new Expanded(
               child: new Align(
                 child: new InkWell(
