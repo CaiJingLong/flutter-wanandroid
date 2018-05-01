@@ -14,15 +14,16 @@ abstract class LikePage extends UserInfoHelper {
   Future<bool> like(BuildContext context, HomeData data) async {
     var islogin = await isLogin();
     if (!islogin) {
-      Navigator.of(context).push(new MaterialPageRoute(builder: (ctx) {
+      var loginResult = await Navigator.of(context).push(new MaterialPageRoute(builder: (ctx) {
         return new LoginPage();
-      })).then((result) {
-        if (result) {
-          _like(data);
-        }
-      });
-      return true;
+      }));
+      if (loginResult) {
+        var likeResult = await _like(data);
+        return likeResult;
+      }
+      return false;
     }
-    return false;
+    var likeResult = await _like(data);
+    return likeResult;
   }
 }
