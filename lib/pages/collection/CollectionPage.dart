@@ -78,7 +78,10 @@ class _CollectionPageState extends State<CollectionPage>
           },
         );
       },
-      child: new SizedBox(height: 74.0, child: buildColumn(data, date, context)),
+      child: new Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: new SizedBox(height: 74.0, child: buildColumn(data, date, context)),
+      ),
     );
   }
 

@@ -289,7 +289,7 @@ abstract class HomeItem extends WebPage with LikePage, NavigatorHelper {
                     ),
                     new InkWell(
                       onTap: () {
-                        like(context, data);
+                        _like(context, data);
                       },
                       child: new Icon(data.collect ? Icons.star : Icons.star_border),
                     )
@@ -308,4 +308,13 @@ abstract class HomeItem extends WebPage with LikePage, NavigatorHelper {
       ),
     );
   }
+
+  void _like(BuildContext context, HomeData data) async {
+    var result = await like(context, data);
+    if (result) {
+      setState(() {});
+    }
+  }
+
+  void setState(VoidCallback fn);
 }
