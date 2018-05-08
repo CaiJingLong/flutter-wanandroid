@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_wanandroid/widget/KProgress.dart';
 
 const kRefreshOffset = 40.0;
 const kLoadMoreOffset = 0.0;
@@ -35,26 +36,66 @@ class LoadMore extends StatefulWidget {
   _LoadMoreState createState() => new _LoadMoreState();
 }
 
-class _LoadMoreState extends State<LoadMore> {
+class _LoadMoreState extends State<LoadMore> with TickerProviderStateMixin {
   double _dragOffset;
 
   _PullIndicatorMode _mode;
 
   var isLoading = false;
 
+  Animation<double> _value;
+  AnimationController _positionController;
+
+  @override
+  void initState() {
+    _positionController = new AnimationController(vsync: this, duration: new Duration(milliseconds: 300));
+    _value = new Tween<double>(
+      // The "value" of the circular progress indicator during a drag.
+      begin: 0.0,
+      end: 1.0,
+    ).animate(_positionController);
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _positionController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
 //    if(widget.child is ListView && enableLoadMore){
 //      return widget.child;
 //    }
-    return new NotificationListener(
+
+    Widget _widget = new NotificationListener(
       onNotification: _handleScrollNotification,
       child: widget.child,
+    );
+
+    return new Stack(
+      children: <Widget>[
+        _widget,
+        new Positioned(
+          left: 0.0,
+          right: 0.0,
+          bottom: 30.0,
+          child: new FadeTransition(
+            opacity: _value,
+            child: new KProgressWidget(
+              text: "",
+              isLoading: true,
+            ),
+          ),
+        )
+      ],
     );
   }
 
   bool _handleScrollNotification(ScrollNotification notification) {
-    if( notification.depth != 0){
+    if (notification.depth != 0) {
       return false;
     }
 
@@ -110,7 +151,7 @@ class _LoadMoreState extends State<LoadMore> {
     });
   }
 
-  Future handleResult(Future result) async{
+  Future handleResult(Future result) async {
     print("handleResult");
     assert(() {
       if (result == null)
@@ -118,14 +159,15 @@ class _LoadMoreState extends State<LoadMore> {
           exception: new FlutterError('The onRefresh/onLoadMore callback returned null.\n'
               'The ScrollIndicator onRefresh/onLoadMore callback must return a Future.'),
           context: 'when calling onRefresh/onLoadMore',
-          library: 'pdrpulm library',
+          library: 'loadmore',
         ));
       return true;
     }());
     if (result == null) return;
     isLoading = true;
-
+    _positionController?.forward();
     await result;
+    _positionController?.reverse();
     isLoading = false;
     if (mounted && _mode == _PullIndicatorMode.refreshing) {
       changeMode(_PullIndicatorMode.idle);
