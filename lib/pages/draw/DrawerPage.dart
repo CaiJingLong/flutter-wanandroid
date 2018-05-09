@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_wanandroid/helper/index.dart';
-import 'package:flutter_wanandroid/other/HeroAnimation.dart';
-import 'package:flutter_wanandroid/other/LogoApp.dart';
 import 'package:flutter_wanandroid/pages/Index.dart';
 import 'package:flutter_wanandroid/pages/index.dart';
 import 'package:flutter_wanandroid/pages/login/LoginPage.dart';

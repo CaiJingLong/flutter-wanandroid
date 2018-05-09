@@ -44,6 +44,7 @@ abstract class CookieHelper {
     return new _MyCookie(name, value);
   }
 
+  // ignore: unused_element
   Cookie _convertMyCoolieToCookie(_MyCookie jsonString) {
     return new Cookie();
   }

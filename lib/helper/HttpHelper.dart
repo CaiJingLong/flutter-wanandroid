@@ -22,8 +22,7 @@ abstract class HttpHelper {
     return map;
   }
 
-  Future<String> requestString(String path,
-      {METHOD method = METHOD.GET, Map<String, String> params, Map<String, String> headers}) async {
+  Future<String> requestString(String path, {METHOD method = METHOD.GET, Map<String, String> params, Map<String, String> headers}) async {
     HttpClientRequest request;
     var uri = new Uri.http(_baseUrl, path, params);
     switch (method) {
@@ -46,7 +45,7 @@ abstract class HttpHelper {
     cookies.addAll(list);
 
     var response = await request.close();
-    var json = await response.transform(UTF8.decoder).join();
+    var json = await response.transform(utf8.decoder).join();
 
     await cookieHelper.addCookieList(response.cookies);
     var doc = parse(json);

@@ -217,9 +217,9 @@ class _HomeListState extends State<HomeList>
     var uri = new Uri.http("www.wanandroid.com", "banner/json");
     var request = await httpClient.getUrl(uri);
     var response = await request.close();
-    var json = await response.transform(UTF8.decoder).join();
+    var jsonString = await response.transform(utf8.decoder).join();
 
-    Map userMap = JSON.decode(json);
+    Map userMap = json.decode(jsonString);
     var resp = new HomeBannerEntity.fromJson(userMap);
 
     _bannerList.clear();
